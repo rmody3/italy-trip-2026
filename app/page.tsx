@@ -57,7 +57,10 @@ export default function Home() {
               side="bottom"
               className="h-[80dvh] p-0 rounded-t-2xl overflow-hidden"
             >
-              <TripPanel activeTheme={theme} onThemeChange={setTheme} />
+              {/* data-testid on a plain div — reliably in DOM for E2E tests */}
+              <div data-testid="mobile-panel" className="h-full overflow-hidden">
+                <TripPanel activeTheme={theme} onThemeChange={setTheme} />
+              </div>
             </SheetContent>
           </Sheet>
         </div>
