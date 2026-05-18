@@ -1,26 +1,138 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
+
+/* ── Leaflet ── */
+@import "leaflet/dist/leaflet.css";
 
 @theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: var(--font-sans);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Theme: Amalfi (default — warm terracotta + sea) ── */
+:root {
+  --background:        oklch(0.99 0.007 75);   /* warm cream */
+  --foreground:        oklch(0.17 0.01 55);    /* charcoal */
+  --card:              oklch(1 0 0);
+  --card-foreground:   oklch(0.17 0.01 55);
+  --popover:           oklch(1 0 0);
+  --popover-foreground: oklch(0.17 0.01 55);
+  --primary:           oklch(0.55 0.14 34);    /* terracotta */
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary:         oklch(0.95 0.01 75);    /* sand */
+  --secondary-foreground: oklch(0.35 0.01 55);
+  --muted:             oklch(0.96 0.008 75);
+  --muted-foreground:  oklch(0.52 0.02 55);
+  --accent:            oklch(0.96 0.008 75);
+  --accent-foreground: oklch(0.35 0.01 55);
+  --destructive:       oklch(0.577 0.245 27.325);
+  --border:            oklch(0.90 0.01 75);    /* warm sand */
+  --input:             oklch(0.90 0.01 75);
+  --ring:              oklch(0.55 0.14 34);
+  --radius:            0.75rem;
+
+  /* custom trip colors */
+  --flight-color: #C45C3A;
+  --train-color:  #1D6B9E;
+  --car-color:    #466A42;
+  --booked-color: #2D6A4F;
+  --pending-color: #A0724A;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Theme: Capri (azure + white) ── */
+.theme-capri {
+  --background:        oklch(0.99 0.005 220);
+  --foreground:        oklch(0.15 0.02 235);
+  --card:              oklch(1 0 0);
+  --card-foreground:   oklch(0.15 0.02 235);
+  --primary:           oklch(0.48 0.14 235);   /* sea blue */
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary:         oklch(0.94 0.015 220);
+  --muted:             oklch(0.95 0.01 220);
+  --muted-foreground:  oklch(0.50 0.03 235);
+  --border:            oklch(0.88 0.015 220);
+  --ring:              oklch(0.48 0.14 235);
+
+  --flight-color: #1D6B9E;
+  --train-color:  #466A42;
+  --car-color:    #8B5E3C;
+}
+
+/* ── Theme: Notte (dark — Amalfi at night) ── */
+.theme-notte {
+  --background:        oklch(0.14 0.01 260);
+  --foreground:        oklch(0.95 0.005 75);
+  --card:              oklch(0.20 0.01 260);
+  --card-foreground:   oklch(0.95 0.005 75);
+  --primary:           oklch(0.65 0.14 34);
+  --primary-foreground: oklch(0.10 0 0);
+  --secondary:         oklch(0.25 0.01 260);
+  --secondary-foreground: oklch(0.85 0.005 75);
+  --muted:             oklch(0.25 0.01 260);
+  --muted-foreground:  oklch(0.60 0.01 75);
+  --accent:            oklch(0.25 0.01 260);
+  --accent-foreground: oklch(0.85 0.005 75);
+  --border:            oklch(0.28 0.01 260);
+  --input:             oklch(0.28 0.01 260);
+  --ring:              oklch(0.65 0.14 34);
+
+  --flight-color: #E8846A;
+  --train-color:  #5DADE2;
+  --car-color:    #82C783;
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; }
+}
+
+/* ── Leaflet overrides ── */
+.leaflet-container { font-family: 'Inter', sans-serif; }
+.leaflet-control-zoom { border: none !important; box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important; }
+.leaflet-control-zoom a {
+  background: white !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+  font-size: 16px !important;
+}
+.leaflet-control-attribution { font-size: 9px !important; opacity: 0.5; }
+
+/* ── Animated route dashes ── */
+@keyframes dashFlow {
+  to { stroke-dashoffset: -24; }
+}
+.route-pending {
+  animation: dashFlow 1s linear infinite;
+}
+
+/* ── Scrollbar ── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Serif display font ── */
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
 }
