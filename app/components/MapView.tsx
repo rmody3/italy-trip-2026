@@ -112,38 +112,39 @@ export default function MapView({ onLocationSelect, activeTheme }: Props) {
         }).addTo(map);
       });
 
-      // Stay pins — highest z-index
+      // Stay pins — emoji only, tooltip on hover
       stays.forEach(stay => {
         const icon = L.divIcon({
-          html: `<div class="pin-stay">
-            <span class="pin-emoji">${stay.emoji}</span>
-            <span class="pin-label">${stay.location.name.split(",")[0]}</span>
-          </div>`,
+          html: `<div class="pin-stay"><span class="pin-emoji">${stay.emoji}</span></div>`,
           className: "pin-wrapper",
-          iconSize: [80, 52],
-          iconAnchor: [40, 52],
+          iconSize: [44, 44],
+          iconAnchor: [22, 44],
         });
         const marker = L.marker(stay.location.coords, { icon, zIndexOffset: 1000 });
+        marker.bindTooltip(
+          `<span style="font-size:12px;font-weight:600;font-family:Inter,sans-serif">${stay.location.name.split(",")[0]}</span>`,
+          { direction: "top", offset: [0, -8], className: "map-tooltip" }
+        );
         marker.on("click", (e) => {
-          // Stop propagation so map.on("click") doesn't immediately clear the selection
           L.DomEvent.stopPropagation(e);
           onSelectRef.current(stay);
         });
         marker.addTo(map);
       });
 
-      // Activity pins — mid z-index
+      // Activity pins — smaller emoji, tooltip on hover
       activities.forEach(act => {
         const icon = L.divIcon({
-          html: `<div class="pin-activity">
-            <span class="pin-emoji pin-emoji-sm">${act.emoji}</span>
-            <span class="pin-label pin-label-sm">${act.name.split(",")[0]}</span>
-          </div>`,
+          html: `<div class="pin-activity"><span class="pin-emoji-sm">${act.emoji}</span></div>`,
           className: "pin-wrapper",
-          iconSize: [72, 44],
-          iconAnchor: [36, 44],
+          iconSize: [34, 34],
+          iconAnchor: [17, 34],
         });
         const marker = L.marker(act.location.coords, { icon, zIndexOffset: 500 });
+        marker.bindTooltip(
+          `<span style="font-size:11px;font-weight:600;font-family:Inter,sans-serif">${act.name.split(",")[0]}</span>`,
+          { direction: "top", offset: [0, -4], className: "map-tooltip" }
+        );
         marker.on("click", (e) => {
           L.DomEvent.stopPropagation(e);
           onSelectRef.current(act);
@@ -151,35 +152,36 @@ export default function MapView({ onLocationSelect, activeTheme }: Props) {
         marker.addTo(map);
       });
 
-      // Transit waypoint labels — lowest z-index, not clickable
+      // Transit dots — tiny, non-interactive, tooltip on hover
       const transitPoints: [number, number][] = [
         [45.63, 8.73], [45.49, 9.20], [43.78, 11.25],
         [41.80, 12.25], [41.14, 16.76], [39.25, 9.05], [49.01, 2.55],
       ];
       const transitLabels = ["MXP", "Milano", "Firenze", "Roma", "Bari", "Cagliari", "CDG"];
       transitPoints.forEach(([lat, lng], i) => {
-        L.marker([lat, lng], {
-          icon: L.divIcon({
-            html: `<div class="pin-transit">${transitLabels[i]}</div>`,
-            className: "pin-wrapper",
-            iconSize: [56, 18],
-            iconAnchor: [28, 9],
-          }),
-          zIndexOffset: 0,
-          interactive: false,
-        }).addTo(map);
+        L.circleMarker([lat, lng], {
+          radius: 4,
+          color: "#fff",
+          fillColor: "#666",
+          fillOpacity: 0.9,
+          weight: 1.5,
+          interactive: true,
+        })
+        .bindTooltip(transitLabels[i], { direction: "top", offset: [0, -4], className: "map-tooltip" })
+        .addTo(map);
       });
 
-      // NYC home pin
-      L.marker([40.64, -73.78], {
-        icon: L.divIcon({
-          html: `<div class="pin-home">🏠 NYC</div>`,
-          className: "pin-wrapper",
-          iconSize: [64, 24],
-          iconAnchor: [32, 12],
-        }),
-        interactive: false,
-      }).addTo(map);
+      // NYC / home dot
+      L.circleMarker([40.64, -73.78], {
+        radius: 5,
+        color: "#C45C3A",
+        fillColor: "#fff",
+        fillOpacity: 1,
+        weight: 2,
+        interactive: true,
+      })
+      .bindTooltip("NYC", { direction: "top", offset: [0, -4], className: "map-tooltip" })
+      .addTo(map);
 
       // Clicking bare map deselects — only after pins had a chance to stop propagation
       map.on("click", () => onSelectRef.current(null));
@@ -214,74 +216,39 @@ export default function MapView({ onLocationSelect, activeTheme }: Props) {
     <>
       <div ref={containerRef} className="w-full h-full" />
       <style>{`
-        .pin-wrapper { background: transparent !important; border: none !important; }
+        .pin-wrapper { background: transparent !important; border: none !important; box-shadow: none !important; }
 
         .pin-stay, .pin-activity {
           display: flex;
-          flex-direction: column;
           align-items: center;
+          justify-content: center;
           cursor: pointer;
           transition: transform 0.15s ease;
-          filter: drop-shadow(0 2px 6px rgba(0,0,0,0.22));
+          filter: drop-shadow(0 2px 8px rgba(0,0,0,0.28));
         }
-        .pin-stay:hover, .pin-activity:hover { transform: scale(1.18); }
+        .pin-stay:hover  { transform: scale(1.25); }
+        .pin-activity:hover { transform: scale(1.2); }
 
-        .pin-emoji { font-size: 26px; line-height: 1; display: block; }
-        .pin-emoji-sm { font-size: 20px; }
+        .pin-emoji    { font-size: 28px; line-height: 1; display: block; }
+        .pin-emoji-sm { font-size: 22px; line-height: 1; display: block; }
 
-        .pin-label {
-          margin-top: 3px;
-          font-size: 10px;
-          font-weight: 600;
-          font-family: 'Inter', sans-serif;
-          background: #fff;
-          color: #1C1917;
-          padding: 1px 6px;
-          border-radius: 4px;
+        /* Leaflet tooltip override */
+        .map-tooltip {
+          background: white !important;
+          border: 1px solid rgba(0,0,0,0.12) !important;
+          border-radius: 6px !important;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.14) !important;
+          padding: 3px 8px !important;
+          color: #1C1917 !important;
           white-space: nowrap;
-          box-shadow: 0 1px 4px rgba(0,0,0,0.18);
         }
-        .pin-label-sm { font-size: 9px; padding: 1px 4px; }
+        .map-tooltip::before { display: none !important; }
 
-        .pin-transit {
-          background: rgba(255,255,255,0.88);
-          backdrop-filter: blur(3px);
-          border: 1px solid rgba(0,0,0,0.12);
-          border-radius: 3px;
-          padding: 1px 5px;
-          font-size: 9px;
-          font-weight: 600;
-          font-family: 'Inter', sans-serif;
-          color: #666;
-          white-space: nowrap;
-          pointer-events: none;
-        }
-
-        .pin-home {
-          background: #fff;
-          border: 1.5px solid #C45C3A;
-          border-radius: 5px;
-          padding: 2px 6px;
-          font-size: 10px;
-          font-weight: 700;
-          font-family: 'Inter', sans-serif;
-          color: #C45C3A;
-          white-space: nowrap;
-          pointer-events: none;
-        }
-
-        /* Dark theme overrides */
-        .theme-notte .pin-transit {
-          background: rgba(30,30,50,0.88);
-          border-color: rgba(255,255,255,0.12);
-          color: #aaa;
-        }
-        .theme-notte .pin-label {
-          background: rgba(30,30,50,0.9);
-          color: #eee;
-        }
-        .theme-notte .pin-home {
-          background: rgba(30,30,50,0.9);
+        /* Dark theme */
+        .theme-notte .map-tooltip {
+          background: rgba(30,30,50,0.95) !important;
+          border-color: rgba(255,255,255,0.15) !important;
+          color: #eee !important;
         }
       `}</style>
     </>
