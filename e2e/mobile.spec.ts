@@ -57,6 +57,20 @@ test("mobile location drawer closes", async ({ page }) => {
   await expect(link).not.toBeVisible({ timeout: 3000 });
 });
 
+test("mobile: tapping a place opens the bottom drawer, no side hover-card / overflow", async ({ page }) => {
+  await page.goto("/");
+  await page.getByText("Regina Palace Hotel").click();
+  // Bottom drawer (LocationSheet) opens...
+  await expect(page.getByTestId("open-maps-link").first()).toBeVisible({ timeout: 5000 });
+  // ...and the desktop side hover-card never renders on mobile
+  await expect(page.getByTestId("hover-card-maps-link")).toHaveCount(0);
+  // ...and nothing spills off the right edge (the reported bug)
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow, "horizontal overflow from a mispositioned popup").toBeLessThanOrEqual(1);
+});
+
 test("mobile theme switcher works", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Capri" }).click();

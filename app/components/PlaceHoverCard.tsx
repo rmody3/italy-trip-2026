@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
@@ -10,7 +10,23 @@ interface Props {
   children: React.ReactNode;
 }
 
+// Hover popovers are a desktop affordance. On touch/mobile they misfire on tap and
+// there's no room for a side card — so we skip them and let the tap open the
+// LocationSheet bottom drawer instead.
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return isMobile;
+}
+
 export default function PlaceHoverCard({ query, name, subtitle, children }: Props) {
+  const isMobile = useIsMobile();
   const [visible, setVisible] = useState(false);
   const [cardTop, setCardTop] = useState(0);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -41,6 +57,11 @@ export default function PlaceHoverCard({ query, name, subtitle, children }: Prop
 
   // Left edge of card = sidebar width (320px) + 8px gap
   const CARD_LEFT = 328;
+
+  // On mobile, render the trigger only — taps bubble to the LocationSheet drawer.
+  if (isMobile) {
+    return <>{children}</>;
+  }
 
   return (
     <>
