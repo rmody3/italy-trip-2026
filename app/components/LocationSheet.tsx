@@ -3,58 +3,63 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import type { Stay, Activity } from "../data/trip";
+import type { SelectedPlace } from "../data/trip";
 
 interface Props {
-  item: Stay | Activity | null;
+  item: SelectedPlace | null;
   onClose: () => void;
 }
 
-function isStay(item: Stay | Activity): item is Stay {
-  return "checkIn" in item;
-}
-
-function CardBody({ item, onClose }: { item: Stay | Activity; onClose: () => void }) {
-  const stay = isStay(item) ? item : null;
-  const activity = !isStay(item) ? (item as Activity) : null;
-  const query = stay ? stay.location.placeQuery : activity!.location.placeQuery;
-  const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(query ?? item.name)}`;
-  const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(query ?? item.name)}&output=embed&z=14`;
+function CardBody({ item, onClose }: { item: SelectedPlace; onClose: () => void }) {
+  const query = item.query;
+  // ?api=1&query= is Google's documented format — resolves to the exact place.
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+  // Map fallback (used only when there's no baked photo). Coords pin the exact spot.
+  const embedQuery = item.mapCoords ? `${item.mapCoords[0]},${item.mapCoords[1]}` : query;
+  const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(embedQuery)}&z=14&output=embed`;
 
   return (
     <>
-      <div className="relative h-44 overflow-hidden bg-muted flex-shrink-0">
-        <iframe src={embedUrl} title={item.name}
-          className="w-full h-full border-0 pointer-events-none" loading="lazy" />
-        <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
-        <div className="absolute bottom-3 left-4 text-4xl filter drop-shadow-lg">{item.emoji}</div>
+      {/* Media: baked photo, else an embedded map of the exact location */}
+      <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted flex-shrink-0">
+        {item.photo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={item.photo} alt={item.name} className="w-full h-full object-cover" />
+        ) : (
+          <iframe
+            src={embedUrl}
+            title={item.name}
+            className="w-full h-full border-0 pointer-events-none"
+            loading="lazy"
+          />
+        )}
+        <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/45 to-transparent pointer-events-none" />
+        {item.emoji && (
+          <div className="absolute bottom-3 left-4 text-4xl drop-shadow-lg">{item.emoji}</div>
+        )}
         <button
           onClick={onClose}
           aria-label="✕"
-          className="absolute top-3 right-3 w-7 h-7 rounded-full bg-card/80 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-foreground border border-border/60 transition-colors text-xs font-bold"
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/35 backdrop-blur-sm flex items-center justify-center text-white/90 hover:bg-black/55 transition-colors text-sm font-bold"
         >
           ✕
         </button>
       </div>
 
-      <div className="p-4 overflow-y-auto">
-        <h3 className="font-semibold text-foreground text-base leading-tight">
-          {stay ? stay.name : activity!.name}
-        </h3>
-        <p className="text-xs text-muted-foreground mt-0.5">
-          {stay
-            ? `${stay.location.name} · ${stay.checkIn} – ${stay.checkOut} · ${stay.nights} nights`
-            : `${activity!.date ?? ""} · ${activity!.category}`}
-        </p>
-        <p className="text-xs text-foreground/70 mt-2 leading-relaxed">
-          {stay ? stay.description : activity!.notes}
-        </p>
-        {/* Distinct label from PlaceHoverCard's "See reviews & photos" */}
+      <div className="p-4">
+        <h3 className="font-semibold text-foreground text-base leading-tight">{item.name}</h3>
+        {item.subtitle && (
+          <p className="text-xs text-muted-foreground mt-1">{item.subtitle}</p>
+        )}
+        {item.description && (
+          <p className="text-sm text-foreground/70 mt-2 leading-relaxed">{item.description}</p>
+        )}
+
         <a
           href={mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-3 flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-semibold transition-colors bg-primary text-primary-foreground hover:opacity-90"
+          className="mt-4 flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold transition-opacity bg-primary text-primary-foreground hover:opacity-90"
           data-testid="open-maps-link"
         >
           <span>📍</span> Open in Google Maps

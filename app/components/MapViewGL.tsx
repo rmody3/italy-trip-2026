@@ -7,11 +7,11 @@ import Map, {
 import type { LayerProps } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { motion } from "framer-motion";
-import { stays, activities } from "../data/trip";
-import type { Stay, Activity } from "../data/trip";
+import { stays, activities, stayToPlace, activityToPlace } from "../data/trip";
+import type { SelectedPlace } from "../data/trip";
 
 interface Props {
-  onLocationSelect: (item: Stay | Activity | null) => void;
+  onLocationSelect: (item: SelectedPlace | null) => void;
   activeTheme: string;
 }
 
@@ -168,7 +168,7 @@ export default function MapViewGL({ onLocationSelect, activeTheme }: Props) {
           anchor="bottom"
           onClick={e => {
             e.originalEvent.stopPropagation();
-            onLocationSelect(stay);
+            onLocationSelect(stayToPlace(stay));
           }}
         >
           <motion.div
@@ -193,7 +193,7 @@ export default function MapViewGL({ onLocationSelect, activeTheme }: Props) {
           anchor="bottom"
           onClick={e => {
             e.originalEvent.stopPropagation();
-            onLocationSelect(act);
+            onLocationSelect(activityToPlace(act));
           }}
         >
           <motion.div

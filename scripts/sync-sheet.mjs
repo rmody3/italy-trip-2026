@@ -9,12 +9,15 @@
 // is stored in the app or on Vercel. Run `npm run sync`, then commit + deploy.
 
 import { execSync } from "node:child_process";
-import { writeFileSync } from "node:fs";
+import { writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const SHEET = "1k6uIUhaXpoKKXNT2mrZUDjgBQneiYtpb94cKQgGkU5c";
-const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "app", "data", "trip.generated.ts");
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const OUT = join(ROOT, "app", "data", "trip.generated.ts");
+const PHOTOS_DIR = join(ROOT, "public", "photos");
+const UA = { "User-Agent": "italy-trip-sync/1.0 (personal trip planner)" };
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 function token() {
@@ -61,12 +64,64 @@ function parseActDate(str) {
 // ── _DB tab -> places / stays / activities ──────────────────────────────────
 const db = await values("_DB");
 const dbRows = db.slice(1).filter((r) => r[0] && !r[0].startsWith("#"));
-const col = { Type: 0, Key: 1, Name: 2, Lat: 3, Lng: 4, StopType: 5, Emoji: 6, Category: 7, Aliases: 8, Ref: 9, Date: 10, Notes: 11, PlaceQuery: 12 };
+const col = { Type: 0, Key: 1, Name: 2, Lat: 3, Lng: 4, StopType: 5, Emoji: 6, Category: 7, Aliases: 8, Ref: 9, Date: 10, Notes: 11, PlaceQuery: 12, Photo: 13 };
 const g = (r, c) => (r[col[c]] || "").trim();
 
 const placeRows = dbRows.filter((r) => g(r, "Type") === "PLACE");
 const stayRows = dbRows.filter((r) => g(r, "Type") === "STAY");
 const actRows = dbRows.filter((r) => g(r, "Type") === "ACTIVITY");
+
+// ── Photos (keyless): the _DB "Photo" column is either a direct image URL or
+// "wiki:<Wikipedia Title>". We download the first real photo to public/photos/
+// <key>.jpg once (cached), so the app ships local images and no keys. Places
+// without a usable photo fall back to the embedded map in the drawer.
+async function wikiImage(title) {
+  const api = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=pageimages&piprop=thumbnail&pithumbsize=1000&format=json&redirects=1`;
+  const r = await fetch(api, { headers: UA });
+  if (!r.ok) return null;
+  const page = Object.values((await r.json()).query.pages)[0];
+  const src = page?.thumbnail?.source;
+  if (!src || /\.svg/i.test(src)) return null; // skip logos / vector maps
+  return src;
+}
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+async function fetchImage(url) {
+  // one retry with backoff — Wikimedia rate-limits rapid sequential fetches
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const r = await fetch(url, { headers: UA });
+    if (r.ok) return Buffer.from(await r.arrayBuffer());
+    if (r.status === 429) await sleep(1500);
+    else return null;
+  }
+  return null;
+}
+async function ensurePhoto(key, spec) {
+  const dest = join(PHOTOS_DIR, `${key}.jpg`);
+  const rel = `/photos/${key}.jpg`;
+  if (existsSync(dest)) return rel; // cached — never re-fetch
+  try {
+    const url = spec.startsWith("http") ? spec : spec.startsWith("wiki:") ? await wikiImage(spec.slice(5)) : null;
+    if (!url) return null;
+    const buf = await fetchImage(url);
+    if (!buf || buf.length < 1500) return null; // missing / too small to be a real photo
+    mkdirSync(PHOTOS_DIR, { recursive: true });
+    writeFileSync(dest, buf);
+    console.log(`  📷 ${key}`);
+    return rel;
+  } catch (e) {
+    console.warn(`  ⚠ photo ${key}: ${e.message}`);
+    return null;
+  }
+}
+const photoMap = new Map();
+for (const r of dbRows) {
+  const key = g(r, "Key"), spec = g(r, "Photo");
+  if (!key || !spec) continue;
+  const cached = existsSync(join(PHOTOS_DIR, `${key}.jpg`));
+  const p = await ensurePhoto(key, spec);
+  if (p) photoMap.set(key, p);
+  if (!cached) await sleep(350); // be gentle with Wikimedia on fresh fetches
+}
 
 // place lookup for resolving Transportation FROM/TO + Itinerary Place labels
 const placeByAlias = new Map();
@@ -76,6 +131,7 @@ for (const r of placeRows) {
     key: g(r, "Key"), name: g(r, "Name"),
     lat: g(r, "Lat"), lng: g(r, "Lng"),
     stop: g(r, "StopType"), emoji: g(r, "Emoji"), pq: g(r, "PlaceQuery"),
+    photo: photoMap.get(g(r, "Key")) || "",
   };
   placeByKey.set(norm(p.key), p);
   placeByAlias.set(norm(p.key), p);
@@ -88,6 +144,7 @@ function location(token) {
   if (!p) { console.warn(`⚠ unresolved place "${token}" — add it to _DB`); p = { name: token, lat: "0", lng: "0", stop: "stay", pq: "" }; }
   const loc = { name: p.name, coords: [Number(p.lat) || 0, Number(p.lng) || 0], type: p.stop || "stay" };
   if (p.pq) loc.placeQuery = p.pq;
+  if (p.photo) loc.photo = p.photo;
   return loc;
 }
 const labelEmoji = (label) => (placeByKey.get(norm(label))?.emoji) || "";
@@ -165,6 +222,7 @@ const stays = stayRows.map((r) => {
   const nights = checkInDt && checkOutDt ? Math.round((checkOutDt.num - checkInDt.num) / 864e5) : 0;
   const loc = { name: g(r, "Name"), coords: [Number(g(r, "Lat")) || 0, Number(g(r, "Lng")) || 0], type: "stay" };
   if (g(r, "PlaceQuery")) loc.placeQuery = g(r, "PlaceQuery");
+  if (photoMap.get(g(r, "Key"))) loc.photo = photoMap.get(g(r, "Key"));
   return {
     id: g(r, "Key"), name: g(r, "Name"), location: loc,
     checkIn: checkInDt ? mdShort(checkInDt) : "", checkOut: checkOutDt ? mdShort(checkOutDt) : "",
@@ -177,6 +235,7 @@ const stays = stayRows.map((r) => {
 const activities = actRows.map((r) => {
   const loc = { name: g(r, "Name"), coords: [Number(g(r, "Lat")) || 0, Number(g(r, "Lng")) || 0], type: g(r, "StopType") || "stay" };
   if (g(r, "PlaceQuery")) loc.placeQuery = g(r, "PlaceQuery");
+  if (photoMap.get(g(r, "Key"))) loc.photo = photoMap.get(g(r, "Key"));
   const a = { id: g(r, "Key"), name: g(r, "Name"), location: loc, category: g(r, "Category"), emoji: g(r, "Emoji"), _num: parseActDate(g(r, "Date")) };
   if (g(r, "Date")) a.date = g(r, "Date");
   if (g(r, "Notes")) a.notes = g(r, "Notes");

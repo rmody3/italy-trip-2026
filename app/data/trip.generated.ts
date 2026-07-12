@@ -13,7 +13,8 @@ export const stays = [
         8.5355
       ],
       "type": "stay",
-      "placeQuery": "Stresa Lake Maggiore Italy"
+      "placeQuery": "Regina Palace Hotel, Stresa",
+      "photo": "/photos/lake-maggiore.jpg"
     },
     "checkIn": "Jul 23",
     "checkOut": "Jul 26",
@@ -32,7 +33,8 @@ export const stays = [
         11.7167
       ],
       "type": "stay",
-      "placeQuery": "Lupaia Hotel Monticchiello Tuscany"
+      "placeQuery": "Lupaia, Torrita di Siena",
+      "photo": "/photos/tuscany.jpg"
     },
     "checkIn": "Jul 26",
     "checkOut": "Jul 29",
@@ -51,7 +53,7 @@ export const stays = [
         17.5888
       ],
       "type": "stay",
-      "placeQuery": "Ostuni Puglia Italy white city"
+      "placeQuery": "Masseria Le Carrube, Ostuni"
     },
     "checkIn": "Jul 29",
     "checkOut": "Aug 2",
@@ -70,7 +72,8 @@ export const stays = [
         9.1217
       ],
       "type": "stay",
-      "placeQuery": "Cagliari Sardinia Italy"
+      "placeQuery": "Sardinia, Italy",
+      "photo": "/photos/sardinia.jpg"
     },
     "checkIn": "Aug 2",
     "checkOut": "Aug 6",
@@ -91,7 +94,8 @@ export const legs = [
         -73.7781
       ],
       "type": "airport",
-      "placeQuery": "JFK Airport New York"
+      "placeQuery": "John F. Kennedy International Airport, Queens, New York",
+      "photo": "/photos/JFK.jpg"
     },
     "to": {
       "name": "Milan Malpensa",
@@ -100,7 +104,8 @@ export const legs = [
         8.7281
       ],
       "type": "airport",
-      "placeQuery": "Milan Malpensa Airport"
+      "placeQuery": "Milan Malpensa Airport",
+      "photo": "/photos/MXP.jpg"
     },
     "mode": "flight",
     "date": "Jul 22",
@@ -121,7 +126,8 @@ export const legs = [
         8.7281
       ],
       "type": "airport",
-      "placeQuery": "Milan Malpensa Airport"
+      "placeQuery": "Milan Malpensa Airport",
+      "photo": "/photos/MXP.jpg"
     },
     "to": {
       "name": "Stresa, Lake Maggiore",
@@ -130,7 +136,8 @@ export const legs = [
         8.5355
       ],
       "type": "stay",
-      "placeQuery": "Stresa Lake Maggiore Italy"
+      "placeQuery": "Stresa, Verbano-Cusio-Ossola, Italy",
+      "photo": "/photos/STRESA.jpg"
     },
     "mode": "train",
     "date": "Jul 23",
@@ -148,7 +155,8 @@ export const legs = [
         8.5355
       ],
       "type": "stay",
-      "placeQuery": "Stresa Lake Maggiore Italy"
+      "placeQuery": "Stresa, Verbano-Cusio-Ossola, Italy",
+      "photo": "/photos/STRESA.jpg"
     },
     "to": {
       "name": "Milano Centrale",
@@ -157,7 +165,8 @@ export const legs = [
         9.2035
       ],
       "type": "station",
-      "placeQuery": "Milano Centrale Station"
+      "placeQuery": "Milano Centrale railway station",
+      "photo": "/photos/MILANO_CENTRALE.jpg"
     },
     "mode": "train",
     "date": "Jul 26",
@@ -175,7 +184,8 @@ export const legs = [
         9.2035
       ],
       "type": "station",
-      "placeQuery": "Milano Centrale Station"
+      "placeQuery": "Milano Centrale railway station",
+      "photo": "/photos/MILANO_CENTRALE.jpg"
     },
     "to": {
       "name": "Firenze SMN",
@@ -184,7 +194,8 @@ export const legs = [
         11.2457
       ],
       "type": "station",
-      "placeQuery": "Santa Maria Novella Florence"
+      "placeQuery": "Firenze Santa Maria Novella railway station",
+      "photo": "/photos/FIRENZE_SMN.jpg"
     },
     "mode": "train",
     "date": "Jul 26",
@@ -206,7 +217,8 @@ export const legs = [
         11.2457
       ],
       "type": "station",
-      "placeQuery": "Santa Maria Novella Florence"
+      "placeQuery": "Firenze Santa Maria Novella railway station",
+      "photo": "/photos/FIRENZE_SMN.jpg"
     },
     "to": {
       "name": "Lupaia, Tuscany",
@@ -215,7 +227,8 @@ export const legs = [
         11.7167
       ],
       "type": "stay",
-      "placeQuery": "Lupaia Hotel Monticchiello Tuscany"
+      "placeQuery": "Lupaia, Torrita di Siena, Tuscany",
+      "photo": "/photos/LUPAIA.jpg"
     },
     "mode": "car",
     "date": "Jul 26",
@@ -234,7 +247,8 @@ export const legs = [
         12.2462
       ],
       "type": "airport",
-      "placeQuery": "Rome Fiumicino Airport FCO"
+      "placeQuery": "Leonardo da Vinci–Fiumicino Airport",
+      "photo": "/photos/FCO.jpg"
     },
     "to": {
       "name": "Bari Airport",
@@ -243,7 +257,8 @@ export const legs = [
         16.7624
       ],
       "type": "airport",
-      "placeQuery": "Bari Karol Wojtyla Airport"
+      "placeQuery": "Bari Karol Wojtyła Airport",
+      "photo": "/photos/BRI.jpg"
     },
     "mode": "flight",
     "date": "Jul 29",
@@ -265,7 +280,8 @@ export const legs = [
         16.7624
       ],
       "type": "airport",
-      "placeQuery": "Bari Karol Wojtyla Airport"
+      "placeQuery": "Bari Karol Wojtyła Airport",
+      "photo": "/photos/BRI.jpg"
     },
     "to": {
       "name": "Ostuni, Puglia",
@@ -274,7 +290,8 @@ export const legs = [
         17.5888
       ],
       "type": "stay",
-      "placeQuery": "Ostuni Puglia Italy white city"
+      "placeQuery": "Ostuni, Puglia, Italy",
+      "photo": "/photos/OSTUNI.jpg"
     },
     "mode": "car",
     "date": "Jul 29",
@@ -292,7 +309,8 @@ export const legs = [
         16.7624
       ],
       "type": "airport",
-      "placeQuery": "Bari Karol Wojtyla Airport"
+      "placeQuery": "Bari Karol Wojtyła Airport",
+      "photo": "/photos/BRI.jpg"
     },
     "to": {
       "name": "Cagliari Airport",
@@ -301,7 +319,7 @@ export const legs = [
         9.054
       ],
       "type": "airport",
-      "placeQuery": "Cagliari Elmas Airport Sardinia"
+      "placeQuery": "Cagliari Elmas Airport"
     },
     "mode": "flight",
     "date": "Aug 2",
@@ -322,7 +340,7 @@ export const legs = [
         9.054
       ],
       "type": "airport",
-      "placeQuery": "Cagliari Elmas Airport Sardinia"
+      "placeQuery": "Cagliari Elmas Airport"
     },
     "to": {
       "name": "Sardinia",
@@ -331,7 +349,7 @@ export const legs = [
         9.1217
       ],
       "type": "stay",
-      "placeQuery": "Cagliari Sardinia Italy"
+      "placeQuery": "Sardinia, Italy"
     },
     "mode": "car",
     "date": "Aug 2",
@@ -349,7 +367,7 @@ export const legs = [
         9.054
       ],
       "type": "airport",
-      "placeQuery": "Cagliari Elmas Airport Sardinia"
+      "placeQuery": "Cagliari Elmas Airport"
     },
     "to": {
       "name": "Paris CDG",
@@ -358,7 +376,7 @@ export const legs = [
         2.5479
       ],
       "type": "airport",
-      "placeQuery": "Charles de Gaulle Airport Paris"
+      "placeQuery": "Paris Charles de Gaulle Airport"
     },
     "mode": "flight",
     "date": "Aug 6",
@@ -380,7 +398,7 @@ export const legs = [
         2.5479
       ],
       "type": "airport",
-      "placeQuery": "Charles de Gaulle Airport Paris"
+      "placeQuery": "Paris Charles de Gaulle Airport"
     },
     "to": {
       "name": "New York JFK",
@@ -389,7 +407,8 @@ export const legs = [
         -73.7781
       ],
       "type": "airport",
-      "placeQuery": "JFK Airport New York"
+      "placeQuery": "John F. Kennedy International Airport, Queens, New York",
+      "photo": "/photos/JFK.jpg"
     },
     "mode": "flight",
     "date": "Aug 6",
@@ -415,7 +434,8 @@ export const activities = [
         8.5108
       ],
       "type": "stay",
-      "placeQuery": "Isola Bella Borromean Islands"
+      "placeQuery": "Isola Bella, Stresa, Lake Maggiore",
+      "photo": "/photos/borromean.jpg"
     },
     "category": "attraction",
     "emoji": "🏝️",
@@ -432,7 +452,8 @@ export const activities = [
         11.6801
       ],
       "type": "stay",
-      "placeQuery": "Pienza Tuscany Italy"
+      "placeQuery": "Pienza, Siena, Tuscany",
+      "photo": "/photos/pienza.jpg"
     },
     "category": "attraction",
     "emoji": "🗺️",
@@ -449,7 +470,8 @@ export const activities = [
         17.5851
       ],
       "type": "stay",
-      "placeQuery": "Ostuni white city old town Puglia"
+      "placeQuery": "Ostuni, Puglia, Italy",
+      "photo": "/photos/ostuni-town.jpg"
     },
     "category": "attraction",
     "emoji": "🕌",
@@ -474,7 +496,8 @@ export const timeline = [
             -73.7781
           ],
           "type": "airport",
-          "placeQuery": "JFK Airport New York"
+          "placeQuery": "John F. Kennedy International Airport, Queens, New York",
+          "photo": "/photos/JFK.jpg"
         },
         "to": {
           "name": "Milan Malpensa",
@@ -483,7 +506,8 @@ export const timeline = [
             8.7281
           ],
           "type": "airport",
-          "placeQuery": "Milan Malpensa Airport"
+          "placeQuery": "Milan Malpensa Airport",
+          "photo": "/photos/MXP.jpg"
         },
         "mode": "flight",
         "date": "Jul 22",
@@ -516,7 +540,8 @@ export const timeline = [
           8.5355
         ],
         "type": "stay",
-        "placeQuery": "Stresa Lake Maggiore Italy"
+        "placeQuery": "Regina Palace Hotel, Stresa",
+        "photo": "/photos/lake-maggiore.jpg"
       },
       "checkIn": "Jul 23",
       "checkOut": "Jul 26",
@@ -535,7 +560,8 @@ export const timeline = [
             8.7281
           ],
           "type": "airport",
-          "placeQuery": "Milan Malpensa Airport"
+          "placeQuery": "Milan Malpensa Airport",
+          "photo": "/photos/MXP.jpg"
         },
         "to": {
           "name": "Stresa, Lake Maggiore",
@@ -544,7 +570,8 @@ export const timeline = [
             8.5355
           ],
           "type": "stay",
-          "placeQuery": "Stresa Lake Maggiore Italy"
+          "placeQuery": "Stresa, Verbano-Cusio-Ossola, Italy",
+          "photo": "/photos/STRESA.jpg"
         },
         "mode": "train",
         "date": "Jul 23",
@@ -565,7 +592,8 @@ export const timeline = [
             8.5108
           ],
           "type": "stay",
-          "placeQuery": "Isola Bella Borromean Islands"
+          "placeQuery": "Isola Bella, Stresa, Lake Maggiore",
+          "photo": "/photos/borromean.jpg"
         },
         "category": "attraction",
         "emoji": "🏝️",
@@ -594,7 +622,8 @@ export const timeline = [
           11.7167
         ],
         "type": "stay",
-        "placeQuery": "Lupaia Hotel Monticchiello Tuscany"
+        "placeQuery": "Lupaia, Torrita di Siena",
+        "photo": "/photos/tuscany.jpg"
       },
       "checkIn": "Jul 26",
       "checkOut": "Jul 29",
@@ -613,7 +642,8 @@ export const timeline = [
             8.5355
           ],
           "type": "stay",
-          "placeQuery": "Stresa Lake Maggiore Italy"
+          "placeQuery": "Stresa, Verbano-Cusio-Ossola, Italy",
+          "photo": "/photos/STRESA.jpg"
         },
         "to": {
           "name": "Milano Centrale",
@@ -622,7 +652,8 @@ export const timeline = [
             9.2035
           ],
           "type": "station",
-          "placeQuery": "Milano Centrale Station"
+          "placeQuery": "Milano Centrale railway station",
+          "photo": "/photos/MILANO_CENTRALE.jpg"
         },
         "mode": "train",
         "date": "Jul 26",
@@ -640,7 +671,8 @@ export const timeline = [
             9.2035
           ],
           "type": "station",
-          "placeQuery": "Milano Centrale Station"
+          "placeQuery": "Milano Centrale railway station",
+          "photo": "/photos/MILANO_CENTRALE.jpg"
         },
         "to": {
           "name": "Firenze SMN",
@@ -649,7 +681,8 @@ export const timeline = [
             11.2457
           ],
           "type": "station",
-          "placeQuery": "Santa Maria Novella Florence"
+          "placeQuery": "Firenze Santa Maria Novella railway station",
+          "photo": "/photos/FIRENZE_SMN.jpg"
         },
         "mode": "train",
         "date": "Jul 26",
@@ -671,7 +704,8 @@ export const timeline = [
             11.2457
           ],
           "type": "station",
-          "placeQuery": "Santa Maria Novella Florence"
+          "placeQuery": "Firenze Santa Maria Novella railway station",
+          "photo": "/photos/FIRENZE_SMN.jpg"
         },
         "to": {
           "name": "Lupaia, Tuscany",
@@ -680,7 +714,8 @@ export const timeline = [
             11.7167
           ],
           "type": "stay",
-          "placeQuery": "Lupaia Hotel Monticchiello Tuscany"
+          "placeQuery": "Lupaia, Torrita di Siena, Tuscany",
+          "photo": "/photos/LUPAIA.jpg"
         },
         "mode": "car",
         "date": "Jul 26",
@@ -702,7 +737,8 @@ export const timeline = [
             11.6801
           ],
           "type": "stay",
-          "placeQuery": "Pienza Tuscany Italy"
+          "placeQuery": "Pienza, Siena, Tuscany",
+          "photo": "/photos/pienza.jpg"
         },
         "category": "attraction",
         "emoji": "🗺️",
@@ -731,7 +767,7 @@ export const timeline = [
           17.5888
         ],
         "type": "stay",
-        "placeQuery": "Ostuni Puglia Italy white city"
+        "placeQuery": "Masseria Le Carrube, Ostuni"
       },
       "checkIn": "Jul 29",
       "checkOut": "Aug 2",
@@ -750,7 +786,8 @@ export const timeline = [
             12.2462
           ],
           "type": "airport",
-          "placeQuery": "Rome Fiumicino Airport FCO"
+          "placeQuery": "Leonardo da Vinci–Fiumicino Airport",
+          "photo": "/photos/FCO.jpg"
         },
         "to": {
           "name": "Bari Airport",
@@ -759,7 +796,8 @@ export const timeline = [
             16.7624
           ],
           "type": "airport",
-          "placeQuery": "Bari Karol Wojtyla Airport"
+          "placeQuery": "Bari Karol Wojtyła Airport",
+          "photo": "/photos/BRI.jpg"
         },
         "mode": "flight",
         "date": "Jul 29",
@@ -781,7 +819,8 @@ export const timeline = [
             16.7624
           ],
           "type": "airport",
-          "placeQuery": "Bari Karol Wojtyla Airport"
+          "placeQuery": "Bari Karol Wojtyła Airport",
+          "photo": "/photos/BRI.jpg"
         },
         "to": {
           "name": "Ostuni, Puglia",
@@ -790,7 +829,8 @@ export const timeline = [
             17.5888
           ],
           "type": "stay",
-          "placeQuery": "Ostuni Puglia Italy white city"
+          "placeQuery": "Ostuni, Puglia, Italy",
+          "photo": "/photos/OSTUNI.jpg"
         },
         "mode": "car",
         "date": "Jul 29",
@@ -811,7 +851,8 @@ export const timeline = [
             17.5851
           ],
           "type": "stay",
-          "placeQuery": "Ostuni white city old town Puglia"
+          "placeQuery": "Ostuni, Puglia, Italy",
+          "photo": "/photos/ostuni-town.jpg"
         },
         "category": "attraction",
         "emoji": "🕌",
@@ -841,7 +882,8 @@ export const timeline = [
           9.1217
         ],
         "type": "stay",
-        "placeQuery": "Cagliari Sardinia Italy"
+        "placeQuery": "Sardinia, Italy",
+        "photo": "/photos/sardinia.jpg"
       },
       "checkIn": "Aug 2",
       "checkOut": "Aug 6",
@@ -860,7 +902,8 @@ export const timeline = [
             16.7624
           ],
           "type": "airport",
-          "placeQuery": "Bari Karol Wojtyla Airport"
+          "placeQuery": "Bari Karol Wojtyła Airport",
+          "photo": "/photos/BRI.jpg"
         },
         "to": {
           "name": "Cagliari Airport",
@@ -869,7 +912,7 @@ export const timeline = [
             9.054
           ],
           "type": "airport",
-          "placeQuery": "Cagliari Elmas Airport Sardinia"
+          "placeQuery": "Cagliari Elmas Airport"
         },
         "mode": "flight",
         "date": "Aug 2",
@@ -890,7 +933,7 @@ export const timeline = [
             9.054
           ],
           "type": "airport",
-          "placeQuery": "Cagliari Elmas Airport Sardinia"
+          "placeQuery": "Cagliari Elmas Airport"
         },
         "to": {
           "name": "Sardinia",
@@ -899,7 +942,7 @@ export const timeline = [
             9.1217
           ],
           "type": "stay",
-          "placeQuery": "Cagliari Sardinia Italy"
+          "placeQuery": "Sardinia, Italy"
         },
         "mode": "car",
         "date": "Aug 2",
@@ -926,7 +969,7 @@ export const timeline = [
             9.054
           ],
           "type": "airport",
-          "placeQuery": "Cagliari Elmas Airport Sardinia"
+          "placeQuery": "Cagliari Elmas Airport"
         },
         "to": {
           "name": "Paris CDG",
@@ -935,7 +978,7 @@ export const timeline = [
             2.5479
           ],
           "type": "airport",
-          "placeQuery": "Charles de Gaulle Airport Paris"
+          "placeQuery": "Paris Charles de Gaulle Airport"
         },
         "mode": "flight",
         "date": "Aug 6",
@@ -957,7 +1000,7 @@ export const timeline = [
             2.5479
           ],
           "type": "airport",
-          "placeQuery": "Charles de Gaulle Airport Paris"
+          "placeQuery": "Paris Charles de Gaulle Airport"
         },
         "to": {
           "name": "New York JFK",
@@ -966,7 +1009,8 @@ export const timeline = [
             -73.7781
           ],
           "type": "airport",
-          "placeQuery": "JFK Airport New York"
+          "placeQuery": "John F. Kennedy International Airport, Queens, New York",
+          "photo": "/photos/JFK.jpg"
         },
         "mode": "flight",
         "date": "Aug 6",

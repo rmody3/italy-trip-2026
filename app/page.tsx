@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import TripPanel from "./components/TripPanel";
 import LocationSheet from "./components/LocationSheet";
-import type { Stay, Activity } from "./data/trip";
+import type { SelectedPlace } from "./data/trip";
 
 const MapViewGL = dynamic(() => import("./components/MapViewGL"), { ssr: false });
 
@@ -12,7 +12,7 @@ type Theme = "amalfi" | "capri" | "notte";
 
 export default function Home() {
   const [theme, setTheme] = useState<Theme>("amalfi");
-  const [selected, setSelected] = useState<Stay | Activity | null>(null);
+  const [selected, setSelected] = useState<SelectedPlace | null>(null);
 
   // Only mount the map on desktop. On mobile the map is hidden, but if it were
   // still mounted MapLibre would initialize and pull vector tiles over cellular

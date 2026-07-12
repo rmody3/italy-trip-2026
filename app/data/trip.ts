@@ -5,7 +5,8 @@ export interface Location {
   name: string;
   coords: [number, number]; // [lat, lng]
   type: StopType;
-  placeQuery?: string; // for Google Maps search
+  placeQuery?: string; // exact Google Maps search query for THIS place
+  photo?: string;      // /photos/<key>.jpg baked at sync time (optional)
 }
 
 export interface Stay {
@@ -44,6 +45,59 @@ export interface Activity {
   category: "restaurant" | "attraction" | "beach" | "winery" | "activity";
   emoji: string;
   notes?: string;
+}
+
+// ── Selectable place ────────────────────────────────────────────────────────────
+// Anything the user can tap (a stay, an activity, or a transport endpoint) is
+// normalized into this shape so the LocationSheet can show it and link to the
+// EXACT place with an accurate Google Maps query.
+
+export interface SelectedPlace {
+  name: string;
+  query: string;       // exact Google Maps search query
+  subtitle?: string;
+  emoji?: string;
+  description?: string;
+  photo?: string;
+  mapCoords?: [number, number]; // [lat, lng] fallback for the embedded map
+}
+
+const STOP_EMOJI: Record<StopType, string> = { airport: "✈️", station: "🚉", stay: "📍" };
+
+export function stayToPlace(s: Stay): SelectedPlace {
+  return {
+    name: s.name,
+    query: s.location.placeQuery ?? s.name,
+    subtitle: `${s.location.name} · ${s.checkIn} – ${s.checkOut} · ${s.nights} nights`,
+    emoji: s.emoji,
+    description: s.description,
+    photo: s.location.photo,
+    mapCoords: s.location.coords,
+  };
+}
+
+export function activityToPlace(a: Activity): SelectedPlace {
+  return {
+    name: a.name,
+    query: a.location.placeQuery ?? a.name,
+    subtitle: [a.date, a.category].filter(Boolean).join(" · "),
+    emoji: a.emoji,
+    description: a.notes,
+    photo: a.location.photo,
+    mapCoords: a.location.coords,
+  };
+}
+
+// A transport endpoint (airport, station, car pickup) → its exact place.
+export function locationToPlace(loc: Location, subtitle?: string): SelectedPlace {
+  return {
+    name: loc.name,
+    query: loc.placeQuery ?? loc.name,
+    subtitle: subtitle ?? loc.type.charAt(0).toUpperCase() + loc.type.slice(1),
+    emoji: STOP_EMOJI[loc.type],
+    photo: loc.photo,
+    mapCoords: loc.coords,
+  };
 }
 
 // ── Timeline ───────────────────────────────────────────────────────────────────

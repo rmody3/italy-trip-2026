@@ -71,6 +71,17 @@ test("mobile: tapping a place opens the bottom drawer, no side hover-card / over
   expect(overflow, "horizontal overflow from a mispositioned popup").toBeLessThanOrEqual(1);
 });
 
+test("mobile: tapping a transport endpoint opens that exact place", async ({ page }) => {
+  await page.goto("/");
+  // Lake Maggiore is pre-expanded and contains the MXP → Stresa train leg.
+  await page.getByText("Milan Malpensa").first().click();
+  const link = page.getByTestId("open-maps-link").first();
+  await expect(link).toBeVisible({ timeout: 5000 });
+  const href = await link.getAttribute("href");
+  // Link points exactly at the airport, not a generic city.
+  expect(decodeURIComponent(href ?? "")).toContain("Milan Malpensa Airport");
+});
+
 test("mobile theme switcher works", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Capri" }).click();

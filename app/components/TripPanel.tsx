@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { timeline, modeIcons, modeColors, legs, stays } from "../data/trip";
-import type { Leg, TimelineDay } from "../data/trip";
+import { timeline, modeIcons, modeColors, legs, stays, stayToPlace, activityToPlace, locationToPlace } from "../data/trip";
+import type { Leg, TimelineDay, SelectedPlace } from "../data/trip";
 import PlaceHoverCard from "./PlaceHoverCard";
 
 type Theme = "amalfi" | "capri" | "notte";
@@ -20,7 +20,7 @@ const THEMES: { id: Theme; label: string; swatch: string }[] = [
 interface Props {
   activeTheme: Theme;
   onThemeChange: (t: Theme) => void;
-  onLocationSelect?: (item: import("../data/trip").Stay | import("../data/trip").Activity) => void;
+  onLocationSelect?: (item: SelectedPlace) => void;
 }
 
 export default function TripPanel({ activeTheme, onThemeChange, onLocationSelect }: Props) {
@@ -208,7 +208,7 @@ function DayRow({
                 >
                   <div
                     className="rounded-xl p-3 bg-muted/50 border border-border/60 hover:border-primary/40 active:scale-[0.98] transition-all cursor-pointer"
-                    onClick={() => onLocationSelect?.(day.stay!)}
+                    onClick={() => onLocationSelect?.(stayToPlace(day.stay!))}
                   >
                     <p className="text-sm font-semibold text-foreground">{day.stay.name}</p>
                     <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{day.stay.description}</p>
@@ -219,7 +219,7 @@ function DayRow({
                 </PlaceHoverCard>
               )}
 
-              {day.legs.map(leg => <LegRow key={leg.id} leg={leg} />)}
+              {day.legs.map(leg => <LegRow key={leg.id} leg={leg} onLocationSelect={onLocationSelect} />)}
 
               {day.activities.map(act => (
                 <PlaceHoverCard
@@ -231,7 +231,7 @@ function DayRow({
                   <div
                     className="rounded-xl p-3 border flex gap-2.5 hover:border-primary/40 active:scale-[0.98] transition-all cursor-pointer"
                     style={{ background: "oklch(0.97 0.02 85/0.5)", borderColor: "oklch(0.85 0.04 80)" }}
-                    onClick={() => onLocationSelect?.(act)}
+                    onClick={() => onLocationSelect?.(activityToPlace(act))}
                   >
                     <span className="text-xl leading-none mt-0.5 flex-shrink-0">{act.emoji}</span>
                     <div className="min-w-0">
@@ -261,16 +261,21 @@ function DayRow({
   );
 }
 
-function LegRow({ leg }: { leg: Leg }) {
+function LegRow({ leg, onLocationSelect }: { leg: Leg; onLocationSelect?: (item: SelectedPlace) => void }) {
   const isBooked = leg.status === "booked";
   const color = modeColors[leg.mode];
+  const modeLabel = { flight: "Flight", train: "Train", car: "Drive", taxi: "Taxi" }[leg.mode];
 
   return (
+    // Tapping the card opens the start of the leg (car pickup / departure airport).
     <div
-      className="rounded-xl p-3 border"
+      role="button"
+      tabIndex={0}
+      onClick={() => onLocationSelect?.(locationToPlace(leg.from, `${modeLabel} departure${leg.date ? ` · ${leg.date}` : ""}`))}
+      className="rounded-xl p-3 border cursor-pointer hover:brightness-[0.98] active:scale-[0.99] transition-all"
       style={{ background: `${color}0d`, borderColor: `${color}${isBooked ? "35" : "20"}` }}
     >
-      {/* Route line — both ends hoverable */}
+      {/* Route line — each endpoint opens that exact place */}
       <div className="flex items-center justify-between gap-2 mb-1">
         <div className="flex items-center gap-1.5 min-w-0 flex-1">
           <span className="text-base flex-shrink-0">{modeIcons[leg.mode]}</span>
@@ -280,7 +285,10 @@ function LegRow({ leg }: { leg: Leg }) {
               name={leg.from.name}
               subtitle={leg.from.type}
             >
-              <span className="hover:text-primary hover:underline underline-offset-2 transition-colors truncate cursor-pointer">
+              <span
+                onClick={e => { e.stopPropagation(); onLocationSelect?.(locationToPlace(leg.from, `${modeLabel} departure`)); }}
+                className="hover:text-primary hover:underline underline-offset-2 transition-colors truncate cursor-pointer"
+              >
                 {leg.from.name.split(",")[0]}
               </span>
             </PlaceHoverCard>
@@ -290,7 +298,10 @@ function LegRow({ leg }: { leg: Leg }) {
               name={leg.to.name}
               subtitle={leg.to.type}
             >
-              <span className="hover:text-primary hover:underline underline-offset-2 transition-colors truncate cursor-pointer">
+              <span
+                onClick={e => { e.stopPropagation(); onLocationSelect?.(locationToPlace(leg.to, `${modeLabel} arrival`)); }}
+                className="hover:text-primary hover:underline underline-offset-2 transition-colors truncate cursor-pointer"
+              >
                 {leg.to.name.split(",")[0]}
               </span>
             </PlaceHoverCard>
