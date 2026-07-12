@@ -1,51 +1,64 @@
 /**
- * Mobile-only tests — sidebar is CSS-hidden; content lives in a bottom Sheet.
- * Only runs on the "mobile" project (Pixel 5 viewport via Chromium).
- *
- * The SheetContent has data-testid="mobile-panel" so we can scope assertions
- * to it without strict-mode collisions from the hidden desktop sidebar.
+ * Mobile-only tests — no map, full-screen itinerary, tap-to-open drawer.
+ * Runs on the "mobile" project (Pixel 5 via Chromium).
  */
 import { test, expect } from "@playwright/test";
 
-/** Opens the mobile bottom sheet and returns a scoped locator for its content. */
-async function openSheet(page: import("@playwright/test").Page) {
+test("mobile shows full itinerary (no bottom bar)", async ({ page }) => {
   await page.goto("/");
-  // Click via data-slot attribute — more reliable than text match
-  const trigger = page.locator('[data-slot="sheet-trigger"]');
-  await expect(trigger).toBeVisible({ timeout: 8000 });
-  await trigger.click();
-  // Wait for panel content (data-testid is on SheetContent → Dialog.Popup)
-  const panel = page.locator('[data-testid="mobile-panel"]');
-  await expect(panel).toBeVisible({ timeout: 8000 });
-  return panel;
-}
+  // On mobile, TripPanel is shown directly — no bottom bar needed
+  await expect(page.getByRole("heading", { name: "Italy" })).toBeVisible();
+  await expect(page.getByText("NYC → Milan")).toBeVisible();
+  await expect(page.getByText(/Jul 22 – Aug 6/)).toBeVisible();
+});
 
-test("mobile bottom bar shows trip name and booking count", async ({ page }) => {
+test("mobile shows no map canvas", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByText("Italy 2026")).toBeVisible();
-  await expect(page.getByText(/booked/)).toBeVisible();
+  await page.waitForTimeout(2000);
+  // MapLibre canvas should NOT exist on mobile
+  const canvas = page.locator(".maplibregl-canvas-container");
+  await expect(canvas).toHaveCount(0);
 });
 
-test("mobile tapping bottom bar opens itinerary sheet", async ({ page }) => {
-  const panel = await openSheet(page);
-  await expect(panel.getByText("NYC → Milan")).toBeVisible();
-  await expect(panel.getByText("Lake Maggiore")).toBeVisible();
+test("mobile can expand timeline rows", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button").filter({ hasText: "CAG → Paris → NYC" }).click();
+  await page.waitForTimeout(350);
+  await expect(page.getByText("XDQETZ").first()).toBeVisible();
 });
 
-test("mobile itinerary sheet shows booking progress", async ({ page }) => {
-  const panel = await openSheet(page);
-  await expect(panel.getByText(/confirmed/)).toBeVisible();
+test("mobile tapping a stay card opens location drawer", async ({ page }) => {
+  await page.goto("/");
+  // Lake Maggiore row is pre-expanded — Regina Palace Hotel visible
+  await expect(page.getByText("Regina Palace Hotel")).toBeVisible();
+  await page.getByText("Regina Palace Hotel").click();
+  // LocationSheet renders as Sheet on mobile
+  await expect(page.getByRole("link", { name: /See reviews & photos/i })).toBeVisible({
+    timeout: 5000,
+  });
 });
 
-test("mobile itinerary sheet has theme buttons", async ({ page }) => {
-  const panel = await openSheet(page);
-  await expect(panel.getByRole("button", { name: "Amalfi" })).toBeVisible();
-  await expect(panel.getByRole("button", { name: "Capri" })).toBeVisible();
+test("mobile location drawer shows Google Maps link", async ({ page }) => {
+  await page.goto("/");
+  await page.getByText("Regina Palace Hotel").click();
+  const link = page.getByRole("link", { name: /See reviews & photos/i });
+  await expect(link).toBeVisible({ timeout: 5000 });
+  const href = await link.getAttribute("href");
+  expect(href).toContain("google.com/maps");
 });
 
-test("mobile timeline row expands inside sheet", async ({ page }) => {
-  const panel = await openSheet(page);
-  await panel.getByRole("button").filter({ hasText: "CAG → Paris → NYC" }).click();
-  await page.waitForTimeout(400);
-  await expect(panel.getByText("XDQETZ").first()).toBeVisible();
+test("mobile location drawer closes", async ({ page }) => {
+  await page.goto("/");
+  await page.getByText("Regina Palace Hotel").click();
+  const link = page.getByRole("link", { name: /See reviews & photos/i });
+  await expect(link).toBeVisible({ timeout: 5000 });
+  // Close button
+  await page.getByRole("button", { name: "✕" }).click();
+  await expect(link).not.toBeVisible({ timeout: 3000 });
+});
+
+test("mobile theme switcher works", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Capri" }).click();
+  await expect(page.locator("div.theme-capri")).toBeAttached();
 });

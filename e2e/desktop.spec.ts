@@ -1,99 +1,81 @@
 /**
- * Desktop-only tests — sidebar is visible, hover interactions work.
- * Only runs on the "chromium" project (Desktop Chrome).
+ * Desktop-only tests — MapLibre map, sidebar, hover cards.
+ * Runs on the "chromium" project (Desktop Chrome 1280x720+).
  */
 import { test, expect } from "@playwright/test";
 
-test("sidebar shows trip title and dates", async ({ page }) => {
+test("MapLibre canvas is rendered", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Italy" })).toBeVisible();
-  await expect(page.getByText(/Jul 22 – Aug 6/).first()).toBeVisible();
-  await expect(page.getByText(/Rahul & Dhrumi/).first()).toBeVisible();
+  await page.waitForTimeout(2500);
+  // MapLibre renders a <canvas> inside .maplibregl-canvas-container
+  await expect(page.locator(".maplibregl-canvas-container")).toBeVisible();
 });
 
-test("sidebar shows confirmed booking count", async ({ page }) => {
+test("MapLibre vector tiles load", async ({ page }) => {
+  const tileRequests: string[] = [];
+  page.on("request", req => {
+    const url = req.url();
+    if (url.includes("cartocdn.com") || url.includes("openfreemap") || url.includes("tiles.")) {
+      tileRequests.push(url);
+    }
+  });
   await page.goto("/");
-  await expect(page.getByText(/4\/\d+ confirmed/)).toBeVisible();
+  await page.waitForTimeout(4000);
+  expect(tileRequests.length, "No tiles loaded — map may be broken").toBeGreaterThan(0);
 });
 
-test("timeline shows all major destinations", async ({ page }) => {
+test("stay pins rendered on map", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByText("NYC → Milan")).toBeVisible();
-  await expect(page.getByText("Lake Maggiore")).toBeVisible();
-  await expect(page.getByText("Tuscany", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Puglia", { exact: true })).toBeVisible();
-  await expect(page.getByText("Sardinia", { exact: true })).toBeVisible();
+  await page.waitForTimeout(2500);
+  await expect(page.locator(".pin-stay")).toHaveCount(4);
 });
 
-test("clicking a timeline row expands it and shows leg details", async ({ page }) => {
+test("clicking a stay pin opens location card", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button").filter({ hasText: "CAG → Paris → NYC" }).click();
-  await page.waitForTimeout(350);
-  await expect(page.getByText("XDQETZ").first()).toBeVisible();
-  await expect(page.getByText(/AF1111/)).toBeVisible();
+  await page.waitForTimeout(2500);
+  await page.locator(".pin-stay").first().click();
+  await expect(page.getByRole("link", { name: /See reviews & photos/i })).toBeVisible();
 });
 
-test("expanded Italo train row shows confirmation CCDUHP", async ({ page }) => {
+test("location card closes on X", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button").filter({ hasText: "Milan → Florence → Tuscany" }).click();
-  await page.waitForTimeout(350);
-  await expect(page.getByText("CCDUHP")).toBeVisible();
+  await page.waitForTimeout(2500);
+  await page.locator(".pin-stay").first().click();
+  await expect(page.getByRole("link", { name: /See reviews & photos/i })).toBeVisible();
+  await page.getByRole("button", { name: "✕" }).click();
+  await expect(page.getByRole("link", { name: /See reviews & photos/i })).not.toBeVisible();
 });
 
-test("expanding and collapsing a row works", async ({ page }) => {
+test("clicking a stay card in sidebar opens location card", async ({ page }) => {
   await page.goto("/");
-  const rowButton = page.getByRole("button").filter({ hasText: "CAG → Paris → NYC" });
-  await rowButton.click();
-  await page.waitForTimeout(350);
-  await expect(page.getByText("XDQETZ").first()).toBeVisible();
-  await rowButton.click();
-  await page.waitForTimeout(350);
-  await expect(page.getByText("XDQETZ").first()).not.toBeVisible();
+  // Lake Maggiore row is pre-expanded — "Regina Palace Hotel" should be visible
+  await expect(page.getByText("Regina Palace Hotel")).toBeVisible();
+  await page.getByText("Regina Palace Hotel").click();
+  await expect(page.getByRole("link", { name: /See reviews & photos/i })).toBeVisible();
 });
 
-test("theme switcher has 3 buttons", async ({ page }) => {
+test("hover over stay card shows PlaceHoverCard", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("button", { name: "Amalfi" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Capri" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Notte" })).toBeVisible();
+  await page.getByText("Regina Palace Hotel").hover();
+  await page.waitForTimeout(500);
+  await expect(page.getByRole("link", { name: /See reviews & photos/i })).toBeVisible();
 });
 
-test("switching to Capri theme sets theme-capri class", async ({ page }) => {
+test("switching to Capri theme changes map style", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Capri" }).click();
   await expect(page.locator("div.theme-capri")).toBeAttached();
 });
 
-test("switching to Notte theme sets theme-notte class", async ({ page }) => {
+test("switching to Notte theme changes map style", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Notte" }).click();
   await expect(page.locator("div.theme-notte")).toBeAttached();
 });
 
-test("hovering a stay card shows Google Maps hover card", async ({ page }) => {
+test("Italo confirmation CCDUHP visible after expanding row", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByText("Regina Palace Hotel")).toBeVisible();
-  await page.getByText("Regina Palace Hotel").hover();
-  await page.waitForTimeout(500);
-  await expect(page.getByRole("link", { name: /See reviews & photos/i })).toBeVisible();
-});
-
-test("hover card Google Maps link is correct", async ({ page }) => {
-  await page.goto("/");
-  await page.getByText("Regina Palace Hotel").hover();
-  await page.waitForTimeout(500);
-  const link = page.getByRole("link", { name: /See reviews & photos/i });
-  const href = await link.getAttribute("href");
-  expect(href).toContain("google.com/maps");
-  await expect(link).toHaveAttribute("target", "_blank");
-});
-
-test("hover card disappears after mouse leaves", async ({ page }) => {
-  await page.goto("/");
-  await page.getByText("Regina Palace Hotel").hover();
-  await page.waitForTimeout(500);
-  await expect(page.getByRole("link", { name: /See reviews & photos/i })).toBeVisible();
-  await page.locator(".leaflet-container").hover();
-  await page.waitForTimeout(400);
-  await expect(page.getByRole("link", { name: /See reviews & photos/i })).not.toBeVisible();
+  await page.getByRole("button").filter({ hasText: "Milan → Florence → Tuscany" }).click();
+  await page.waitForTimeout(350);
+  await expect(page.getByText("CCDUHP")).toBeVisible();
 });

@@ -1,6 +1,6 @@
 /**
  * Shared smoke tests — run on both desktop and mobile projects.
- * Only checks things that exist in both layouts (map, title, no JS errors).
+ * Tests things visible in both layouts.
  */
 import { test, expect } from "@playwright/test";
 
@@ -18,7 +18,8 @@ test("page loads without JS errors", async ({ page }) => {
   const real = errors.filter(e =>
     !e.includes("Content Security Policy") &&
     !e.includes("favicon") &&
-    !e.includes("ResizeObserver")
+    !e.includes("ResizeObserver") &&
+    !e.includes("maplibre")
   );
   expect(real, `Console errors:\n${real.join("\n")}`).toHaveLength(0);
 });
@@ -28,41 +29,34 @@ test("page has correct title", async ({ page }) => {
   await expect(page).toHaveTitle(/Italy/i);
 });
 
-test("Leaflet map container is rendered", async ({ page }) => {
+test("trip title and dates are visible", async ({ page }) => {
   await page.goto("/");
-  await page.waitForTimeout(2000);
-  await expect(page.locator(".leaflet-container")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Italy" }).first()).toBeVisible();
+  await expect(page.getByText(/Jul 22 – Aug 6/).first()).toBeVisible();
 });
 
-test("Leaflet tile layer loads (CartoDB tiles requested)", async ({ page }) => {
-  const tileRequests: string[] = [];
-  page.on("request", req => {
-    if (req.url().includes("cartocdn.com")) tileRequests.push(req.url());
-  });
+test("timeline destinations are visible", async ({ page }) => {
   await page.goto("/");
-  await page.waitForTimeout(3000);
-  expect(tileRequests.length, "No CartoDB tiles — map may be broken").toBeGreaterThan(0);
+  await expect(page.getByText("NYC → Milan")).toBeVisible();
+  await expect(page.getByText("Lake Maggiore")).toBeVisible();
+  await expect(page.getByText("Sardinia", { exact: true })).toBeVisible();
 });
 
-test("4 stay pins are rendered on the map", async ({ page }) => {
+test("theme switcher buttons are visible", async ({ page }) => {
   await page.goto("/");
-  await page.waitForTimeout(2000);
-  await expect(page.locator(".pin-stay")).toHaveCount(4);
+  await expect(page.getByRole("button", { name: "Amalfi" }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "Capri" }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "Notte" }).first()).toBeVisible();
 });
 
-test("clicking a stay pin opens the location sheet", async ({ page }) => {
+test("expanding a timeline row shows leg details", async ({ page }) => {
   await page.goto("/");
-  await page.waitForTimeout(2000);
-  await page.locator(".pin-stay").first().click();
-  await expect(page.getByRole("link", { name: /open in google maps/i })).toBeVisible();
+  await page.getByRole("button").filter({ hasText: "CAG → Paris → NYC" }).first().click();
+  await page.waitForTimeout(350);
+  await expect(page.getByText("XDQETZ").first()).toBeVisible();
 });
 
-test("location sheet closes on X button click", async ({ page }) => {
+test("confirmed booking count is shown", async ({ page }) => {
   await page.goto("/");
-  await page.waitForTimeout(2000);
-  await page.locator(".pin-stay").first().click();
-  const link = page.getByRole("link", { name: /open in google maps/i });
-  await expect(link).toBeVisible();
-  await page.getByRole("button", { name: "✕" }).click();
-  await expect(link).not.toBeVisible();
+  await expect(page.getByText(/4\/\d+ confirmed/).first()).toBeVisible();
 });

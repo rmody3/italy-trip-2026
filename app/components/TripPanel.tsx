@@ -20,9 +20,10 @@ const THEMES: { id: Theme; label: string; swatch: string }[] = [
 interface Props {
   activeTheme: Theme;
   onThemeChange: (t: Theme) => void;
+  onLocationSelect?: (item: import("../data/trip").Stay | import("../data/trip").Activity) => void;
 }
 
-export default function TripPanel({ activeTheme, onThemeChange }: Props) {
+export default function TripPanel({ activeTheme, onThemeChange, onLocationSelect }: Props) {
   const [expanded, setExpanded] = useState<string | null>("Jul 22–26");
 
   const totalLegs = legs.length;
@@ -91,6 +92,7 @@ export default function TripPanel({ activeTheme, onThemeChange }: Props) {
               isExpanded={expanded === day.dateShort}
               isLast={i === timeline.length - 1}
               onToggle={() => setExpanded(expanded === day.dateShort ? null : day.dateShort)}
+              onLocationSelect={onLocationSelect}
             />
           ))}
         </div>
@@ -123,13 +125,14 @@ export default function TripPanel({ activeTheme, onThemeChange }: Props) {
 }
 
 function DayRow({
-  day, index, isExpanded, isLast, onToggle,
+  day, index, isExpanded, isLast, onToggle, onLocationSelect,
 }: {
   day: TimelineDay;
   index: number;
   isExpanded: boolean;
   isLast: boolean;
   onToggle: () => void;
+  onLocationSelect?: Props["onLocationSelect"];
 }) {
   const hasBooked = day.legs.some(l => l.status === "booked");
 
@@ -198,7 +201,10 @@ function DayRow({
                   name={day.stay.name}
                   subtitle={`${day.stay.location.name} · ${day.stay.nights} nights`}
                 >
-                  <div className="rounded-xl p-3 bg-muted/50 border border-border/60 hover:border-primary/40 transition-colors">
+                  <div
+                    className="rounded-xl p-3 bg-muted/50 border border-border/60 hover:border-primary/40 active:scale-[0.98] transition-all cursor-pointer"
+                    onClick={() => onLocationSelect?.(day.stay!)}
+                  >
                     <p className="text-sm font-semibold text-foreground">{day.stay.name}</p>
                     <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{day.stay.description}</p>
                     <p className="text-[11px] text-muted-foreground/70 mt-1.5">
@@ -218,8 +224,9 @@ function DayRow({
                   subtitle={act.date}
                 >
                   <div
-                    className="rounded-xl p-3 border flex gap-2.5 hover:border-primary/40 transition-colors cursor-pointer"
+                    className="rounded-xl p-3 border flex gap-2.5 hover:border-primary/40 active:scale-[0.98] transition-all cursor-pointer"
                     style={{ background: "oklch(0.97 0.02 85/0.5)", borderColor: "oklch(0.85 0.04 80)" }}
+                    onClick={() => onLocationSelect?.(act)}
                   >
                     <span className="text-xl leading-none mt-0.5 flex-shrink-0">{act.emoji}</span>
                     <div className="min-w-0">

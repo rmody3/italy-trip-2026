@@ -155,6 +155,18 @@ export default function Timeline({ onDayHover }: Props) {
                           </div>
                         </div>
                       ))}
+
+                      {/* Day-by-day plans (from the Itinerary tab) */}
+                      {day.notes && day.notes.length > 0 && (
+                        <ul className="space-y-1 pt-0.5">
+                          {day.notes.map((note, ni) => (
+                            <li key={ni} className="text-white/50 text-xs flex gap-1.5 leading-relaxed">
+                              <span className="text-white/25 flex-shrink-0">•</span>
+                              <span>{note}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   </motion.div>
                 )}

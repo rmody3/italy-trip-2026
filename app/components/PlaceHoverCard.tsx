@@ -90,9 +90,9 @@ export default function PlaceHoverCard({ query, name, subtitle, children }: Prop
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 flex items-center justify-between w-full px-3 py-2 rounded-xl text-xs font-semibold bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
+                data-testid="hover-card-maps-link"
               >
-                <span>See reviews & photos</span>
-                <span>→</span>
+                <span>View on Google Maps →</span>
               </a>
             </div>
           </motion.div>
