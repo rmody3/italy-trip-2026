@@ -6,9 +6,12 @@ import { test, expect } from "@playwright/test";
 
 test("MapLibre canvas is rendered", async ({ page }) => {
   await page.goto("/");
-  await page.waitForTimeout(2500);
-  // MapLibre renders a <canvas> inside .maplibregl-canvas-container
-  await expect(page.locator(".maplibregl-canvas-container")).toBeVisible();
+  // The map is desktop-only and mounted client-side. Assert MapLibre created its
+  // <canvas>, i.e. the map initialized. We use toBeAttached rather than toBeVisible
+  // because headless Chromium has no GPU, so MapLibre never paints a WebGL frame and
+  // leaves the canvas container visibility:hidden — the map still works for real users
+  // (tiles load + pins render, covered by the sibling tests).
+  await expect(page.locator(".maplibregl-canvas")).toBeAttached({ timeout: 10_000 });
 });
 
 test("MapLibre vector tiles load", async ({ page }) => {
@@ -34,16 +37,16 @@ test("clicking a stay pin opens location card", async ({ page }) => {
   await page.goto("/");
   await page.waitForTimeout(2500);
   await page.locator(".pin-stay").first().click();
-  await expect(page.getByRole("link", { name: /See reviews & photos/i })).toBeVisible();
+  await expect(page.getByTestId("open-maps-link").first()).toBeVisible();
 });
 
 test("location card closes on X", async ({ page }) => {
   await page.goto("/");
   await page.waitForTimeout(2500);
   await page.locator(".pin-stay").first().click();
-  await expect(page.getByRole("link", { name: /See reviews & photos/i })).toBeVisible();
+  await expect(page.getByTestId("open-maps-link").first()).toBeVisible();
   await page.getByRole("button", { name: "✕" }).click();
-  await expect(page.getByRole("link", { name: /See reviews & photos/i })).not.toBeVisible();
+  await expect(page.getByTestId("open-maps-link").first()).not.toBeVisible();
 });
 
 test("clicking a stay card in sidebar opens location card", async ({ page }) => {
@@ -51,14 +54,14 @@ test("clicking a stay card in sidebar opens location card", async ({ page }) => 
   // Lake Maggiore row is pre-expanded — "Regina Palace Hotel" should be visible
   await expect(page.getByText("Regina Palace Hotel")).toBeVisible();
   await page.getByText("Regina Palace Hotel").click();
-  await expect(page.getByRole("link", { name: /See reviews & photos/i })).toBeVisible();
+  await expect(page.getByTestId("open-maps-link").first()).toBeVisible();
 });
 
 test("hover over stay card shows PlaceHoverCard", async ({ page }) => {
   await page.goto("/");
   await page.getByText("Regina Palace Hotel").hover();
   await page.waitForTimeout(500);
-  await expect(page.getByRole("link", { name: /See reviews & photos/i })).toBeVisible();
+  await expect(page.getByTestId("hover-card-maps-link").first()).toBeVisible();
 });
 
 test("switching to Capri theme changes map style", async ({ page }) => {
@@ -75,7 +78,8 @@ test("switching to Notte theme changes map style", async ({ page }) => {
 
 test("Italo confirmation CCDUHP visible after expanding row", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button").filter({ hasText: "Milan → Florence → Tuscany" }).click();
+  // The Italo Milano→Firenze leg (CCDUHP) lives in the "Tuscany" arrival block.
+  await page.getByRole("button").filter({ hasText: "Tuscany" }).first().click();
   await page.waitForTimeout(350);
-  await expect(page.getByText("CCDUHP")).toBeVisible();
+  await expect(page.getByText("CCDUHP").first()).toBeVisible();
 });

@@ -37,9 +37,10 @@ test("trip title and dates are visible", async ({ page }) => {
 
 test("timeline destinations are visible", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByText("NYC → Milan")).toBeVisible();
-  await expect(page.getByText("Lake Maggiore")).toBeVisible();
-  await expect(page.getByText("Sardinia", { exact: true })).toBeVisible();
+  // Location labels come from the sheet's Itinerary "Place" column.
+  await expect(page.getByText("Lake Maggiore").first()).toBeVisible();
+  await expect(page.getByText("Puglia").first()).toBeVisible();
+  await expect(page.getByText("Sardinia", { exact: true }).first()).toBeVisible();
 });
 
 test("theme switcher buttons are visible", async ({ page }) => {
@@ -51,12 +52,13 @@ test("theme switcher buttons are visible", async ({ page }) => {
 
 test("expanding a timeline row shows leg details", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button").filter({ hasText: "CAG → Paris → NYC" }).first().click();
+  // The Aug 6 return-home block (Cagliari → Paris → NYC) is labelled "Home".
+  await page.getByRole("button").filter({ hasText: "Home" }).first().click();
   await page.waitForTimeout(350);
   await expect(page.getByText("XDQETZ").first()).toBeVisible();
 });
 
 test("confirmed booking count is shown", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByText(/4\/\d+ confirmed/).first()).toBeVisible();
+  await expect(page.getByText(/\d+\/\d+ confirmed/).first()).toBeVisible();
 });

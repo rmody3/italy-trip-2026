@@ -8,7 +8,7 @@ test("mobile shows full itinerary (no bottom bar)", async ({ page }) => {
   await page.goto("/");
   // On mobile, TripPanel is shown directly — no bottom bar needed
   await expect(page.getByRole("heading", { name: "Italy" })).toBeVisible();
-  await expect(page.getByText("NYC → Milan")).toBeVisible();
+  await expect(page.getByText("Puglia").first()).toBeVisible();
   await expect(page.getByText(/Jul 22 – Aug 6/)).toBeVisible();
 });
 
@@ -22,7 +22,7 @@ test("mobile shows no map canvas", async ({ page }) => {
 
 test("mobile can expand timeline rows", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button").filter({ hasText: "CAG → Paris → NYC" }).click();
+  await page.getByRole("button").filter({ hasText: "Home" }).first().click();
   await page.waitForTimeout(350);
   await expect(page.getByText("XDQETZ").first()).toBeVisible();
 });
@@ -33,7 +33,7 @@ test("mobile tapping a stay card opens location drawer", async ({ page }) => {
   await expect(page.getByText("Regina Palace Hotel")).toBeVisible();
   await page.getByText("Regina Palace Hotel").click();
   // LocationSheet renders as Sheet on mobile
-  await expect(page.getByRole("link", { name: /See reviews & photos/i })).toBeVisible({
+  await expect(page.getByTestId("open-maps-link").first()).toBeVisible({
     timeout: 5000,
   });
 });
@@ -41,7 +41,7 @@ test("mobile tapping a stay card opens location drawer", async ({ page }) => {
 test("mobile location drawer shows Google Maps link", async ({ page }) => {
   await page.goto("/");
   await page.getByText("Regina Palace Hotel").click();
-  const link = page.getByRole("link", { name: /See reviews & photos/i });
+  const link = page.getByTestId("open-maps-link").first();
   await expect(link).toBeVisible({ timeout: 5000 });
   const href = await link.getAttribute("href");
   expect(href).toContain("google.com/maps");
@@ -50,7 +50,7 @@ test("mobile location drawer shows Google Maps link", async ({ page }) => {
 test("mobile location drawer closes", async ({ page }) => {
   await page.goto("/");
   await page.getByText("Regina Palace Hotel").click();
-  const link = page.getByRole("link", { name: /See reviews & photos/i });
+  const link = page.getByTestId("open-maps-link").first();
   await expect(link).toBeVisible({ timeout: 5000 });
   // Close button
   await page.getByRole("button", { name: "✕" }).click();
