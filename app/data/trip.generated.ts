@@ -219,10 +219,11 @@ export const legs = [
     },
     "mode": "car",
     "date": "Jul 26",
-    "status": "pending",
+    "status": "booked",
+    "confirmation": "Hertz L64746533C6 / AE Voucher 359733840",
     "carrier": "Rental Car",
-    "price": "~$280 + ~$100 one-way fee",
-    "notes": "Compact Automatic (3 days, drop at FCO) · ~1h 30m"
+    "price": "$389.63 (Dhrumi Amex)",
+    "notes": "Jeep Avenger or similar, Automatic Compact (Hertz, 3 days, drop at FCO) · ~1h 30m"
   },
   {
     "id": "leg6",
@@ -683,10 +684,11 @@ export const timeline = [
         },
         "mode": "car",
         "date": "Jul 26",
-        "status": "pending",
+        "status": "booked",
+        "confirmation": "Hertz L64746533C6 / AE Voucher 359733840",
         "carrier": "Rental Car",
-        "price": "~$280 + ~$100 one-way fee",
-        "notes": "Compact Automatic (3 days, drop at FCO) · ~1h 30m"
+        "price": "$389.63 (Dhrumi Amex)",
+        "notes": "Jeep Avenger or similar, Automatic Compact (Hertz, 3 days, drop at FCO) · ~1h 30m"
       }
     ],
     "activities": [

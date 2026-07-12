@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { timeline, modeIcons, modeColors, legs } from "../data/trip";
+import { timeline, modeIcons, modeColors, legs, stays } from "../data/trip";
 import type { Leg, TimelineDay } from "../data/trip";
 import PlaceHoverCard from "./PlaceHoverCard";
 
@@ -24,11 +24,20 @@ interface Props {
 }
 
 export default function TripPanel({ activeTheme, onThemeChange, onLocationSelect }: Props) {
-  const [expanded, setExpanded] = useState<string | null>("Jul 22–26");
+  // Default-expand the first day that has a stay (derived, so it survives sheet edits).
+  const firstStayDay = timeline.find(d => d.stay)?.dateShort ?? timeline[0]?.dateShort ?? null;
+  const [expanded, setExpanded] = useState<string | null>(firstStayDay);
 
   const totalLegs = legs.length;
   const bookedLegs = legs.filter(l => l.status === "booked").length;
-  const pct = Math.round((bookedLegs / totalLegs) * 100);
+  const pct = totalLegs ? Math.round((bookedLegs / totalLegs) * 100) : 0;
+
+  // Stats derived from the sheet, not hardcoded.
+  const stats = [
+    { n: String(stays.length), label: "Regions" },
+    { n: String(stays.reduce((sum, s) => sum + (s.nights || 0), 0)), label: "Nights" },
+    { n: String(legs.filter(l => l.mode === "car").length), label: "Cars" },
+  ];
 
   return (
     <div className="flex flex-col h-full bg-card border-r border-border overflow-hidden">
@@ -66,11 +75,7 @@ export default function TripPanel({ activeTheme, onThemeChange, onLocationSelect
 
         {/* Quick stats */}
         <div className="grid grid-cols-3 gap-2 mt-4">
-          {[
-            { n: "4", label: "Regions" },
-            { n: "15", label: "Nights" },
-            { n: "3", label: "Cars" },
-          ].map(s => (
+          {stats.map(s => (
             <div key={s.label} className="text-center py-2 rounded-lg bg-muted/60">
               <p className="text-base font-bold text-foreground">{s.n}</p>
               <p className="text-[10px] text-muted-foreground">{s.label}</p>
@@ -236,6 +241,18 @@ function DayRow({
                   </div>
                 </PlaceHoverCard>
               ))}
+
+              {/* Day-by-day plans, pulled from the Itinerary tab of the sheet */}
+              {day.notes && day.notes.length > 0 && (
+                <ul className="space-y-1.5 pt-0.5 pl-1">
+                  {day.notes.map((note, ni) => (
+                    <li key={ni} className="flex gap-2 text-[11px] text-muted-foreground leading-relaxed">
+                      <span className="text-primary/60 flex-shrink-0 mt-px">•</span>
+                      <span>{note}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </motion.div>
         )}
