@@ -295,10 +295,13 @@ export const legs = [
     },
     "mode": "car",
     "date": "Jul 29",
-    "status": "pending",
+    "status": "booked",
+    "departureTime": "4:30",
+    "arrivalTime": "9:00+1",
+    "confirmation": "Auto Europe US645058086",
     "carrier": "Rental Car",
-    "price": "$150",
-    "notes": "Compact Automatic (4 days, drop at BRI) · 4 days"
+    "price": "$220",
+    "notes": "Fiat 600 or similar, Automatic Compact (Auto Europe, 4 days, drop at BRI) · 4 days"
   },
   {
     "id": "leg8",
@@ -353,10 +356,13 @@ export const legs = [
     },
     "mode": "car",
     "date": "Aug 2",
-    "status": "pending",
+    "status": "booked",
+    "departureTime": "10:00",
+    "arrivalTime": "10:00+1",
+    "confirmation": "Auto Europe US228145669 / Avis 20221246US3",
     "carrier": "Rental Car",
-    "price": "$181",
-    "notes": "Opel Mokka Compact SUV Auto (4 days, drop at CAG) · 4 days"
+    "price": "$330",
+    "notes": "Nissan Juke or similar, Automatic Compact (Avis via Auto Europe, 4 days, drop at CAG) · 4 days"
   },
   {
     "id": "leg10",
@@ -834,10 +840,13 @@ export const timeline = [
         },
         "mode": "car",
         "date": "Jul 29",
-        "status": "pending",
+        "status": "booked",
+        "departureTime": "4:30",
+        "arrivalTime": "9:00+1",
+        "confirmation": "Auto Europe US645058086",
         "carrier": "Rental Car",
-        "price": "$150",
-        "notes": "Compact Automatic (4 days, drop at BRI) · 4 days"
+        "price": "$220",
+        "notes": "Fiat 600 or similar, Automatic Compact (Auto Europe, 4 days, drop at BRI) · 4 days"
       }
     ],
     "activities": [
@@ -946,10 +955,13 @@ export const timeline = [
         },
         "mode": "car",
         "date": "Aug 2",
-        "status": "pending",
+        "status": "booked",
+        "departureTime": "10:00",
+        "arrivalTime": "10:00+1",
+        "confirmation": "Auto Europe US228145669 / Avis 20221246US3",
         "carrier": "Rental Car",
-        "price": "$181",
-        "notes": "Opel Mokka Compact SUV Auto (4 days, drop at CAG) · 4 days"
+        "price": "$330",
+        "notes": "Nissan Juke or similar, Automatic Compact (Avis via Auto Europe, 4 days, drop at CAG) · 4 days"
       }
     ],
     "activities": []
