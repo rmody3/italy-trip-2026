@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 screenshot*.png
+
+# This project ships GitHub Actions — override the global ignore of .github/
+!.github/
+!.github/workflows/

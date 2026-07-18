@@ -1,0 +1,49 @@
+name: Sync from Google Sheet
+
+# Pulls the latest trip data from the Google Sheet into
+# app/data/trip.generated.ts and commits it. The push triggers Vercel's
+# auto-deploy, so the live site updates with no manual steps.
+
+on:
+  schedule:
+    # Daily at 06:00 UTC. Cron here is always UTC.
+    - cron: "0 6 * * *"
+  workflow_dispatch: # manual "Run workflow" button (also available in the GitHub mobile app)
+
+# Avoid overlapping runs (e.g. a manual run during a scheduled one).
+concurrency:
+  group: sheet-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write # needed to push the regenerated file back
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Sync from sheet
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: npm run sync
+
+      - name: Commit & push if changed
+        run: |
+          if [[ -z "$(git status --porcelain app/data/trip.generated.ts public/photos)" ]]; then
+            echo "No changes — sheet already in sync."
+            exit 0
+          fi
+          git config user.name  "italy-trip-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add app/data/trip.generated.ts public/photos
+          git commit -m "Sync from Google Sheet (automated)"
+          git push

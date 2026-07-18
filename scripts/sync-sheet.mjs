@@ -5,13 +5,15 @@
 //   Content tabs (you edit):   "Itinerary", "Transporation"
 //   Enrichment tab (auto):     "_DB"  -> coords, emoji, category, aliases
 //
-// Auth: uses your local `gcloud auth print-access-token` (Drive scope). Nothing
-// is stored in the app or on Vercel. Run `npm run sync`, then commit + deploy.
+// Auth: local dev uses your `gcloud auth print-access-token`. CI/automation uses
+// a service-account key in GOOGLE_SERVICE_ACCOUNT_JSON (see .github/workflows/
+// sync.yml). Nothing is stored in the app or on Vercel. `npm run sync` regenerates.
 
 import { execSync } from "node:child_process";
 import { writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { createSign } from "node:crypto";
 
 const SHEET = "1k6uIUhaXpoKKXNT2mrZUDjgBQneiYtpb94cKQgGkU5c";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -20,9 +22,40 @@ const PHOTOS_DIR = join(ROOT, "public", "photos");
 const UA = { "User-Agent": "italy-trip-sync/1.0 (personal trip planner)" };
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-function token() {
+const SCOPE = "https://www.googleapis.com/auth/spreadsheets.readonly";
+const b64url = (input) =>
+  Buffer.from(input).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+
+// Mint a Google access token from a service-account key (CI / automation).
+// Signs a JWT with the SA private key and exchanges it — no external deps.
+async function tokenFromServiceAccount(json) {
+  let sa;
+  try { sa = JSON.parse(json); }
+  catch { console.error("✗ GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON"); process.exit(1); }
+  const aud = sa.token_uri || "https://oauth2.googleapis.com/token";
+  const now = Math.floor(Date.now() / 1000);
+  const header = b64url(JSON.stringify({ alg: "RS256", typ: "JWT" }));
+  const claim = b64url(JSON.stringify({ iss: sa.client_email, scope: SCOPE, aud, iat: now, exp: now + 3600 }));
+  const signature = createSign("RSA-SHA256").update(`${header}.${claim}`).sign(sa.private_key, "base64")
+    .replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  const r = await fetch(aud, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion: `${header}.${claim}.${signature}`,
+    }),
+  });
+  if (!r.ok) { console.error(`✗ service-account token: ${r.status} ${await r.text()}`); process.exit(1); }
+  return (await r.json()).access_token;
+}
+
+async function token() {
+  // Automation: a service-account key supplied via the environment.
+  if (process.env.GOOGLE_SERVICE_ACCOUNT_JSON) return tokenFromServiceAccount(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+  // Local dev: your interactive gcloud login.
   try { return execSync("gcloud auth print-access-token", { encoding: "utf8" }).trim(); }
-  catch { console.error("✗ Could not get a token. Run: gcloud auth login"); process.exit(1); }
+  catch { console.error("✗ No token. Run `gcloud auth login`, or set GOOGLE_SERVICE_ACCOUNT_JSON."); process.exit(1); }
 }
 
 async function values(tab) {
@@ -32,7 +65,7 @@ async function values(tab) {
   return (await r.json()).values || [];
 }
 
-const TOKEN = token();
+const TOKEN = await token();
 const norm = (s) => (s || "").toLowerCase().replace(/\s+/g, " ").trim();
 
 // ── date helpers ────────────────────────────────────────────────────────────
