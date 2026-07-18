@@ -8,10 +8,10 @@ import type { SelectedPlace } from "./data/trip";
 
 const MapViewGL = dynamic(() => import("./components/MapViewGL"), { ssr: false });
 
-type Theme = "amalfi" | "capri" | "notte";
+type Theme = "travertine" | "basalt";
 
 export default function Home() {
-  const [theme, setTheme] = useState<Theme>("amalfi");
+  const [theme, setTheme] = useState<Theme>("travertine");
   const [selected, setSelected] = useState<SelectedPlace | null>(null);
 
   // Only mount the map on desktop. On mobile the map is hidden, but if it were

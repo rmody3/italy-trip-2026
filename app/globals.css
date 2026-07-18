@@ -32,81 +32,85 @@
   --radius-2xl: calc(var(--radius) * 1.8);
 }
 
-/* ── Theme: Amalfi (default — warm terracotta + sea) ── */
+/* ── Theme: Travertine (default — warm limestone + olive-sage) ──
+   "Etched in stone" identity. Palette lifted from the Rustic-Warm-Calming
+   moodboard: warm limestone grounds, a basalt ink, travertine mid-tones for
+   rules and carved fills, and one olive-sage accent from the Val d'Orcia. */
 :root {
-  --background:        oklch(0.99 0.007 75);   /* warm cream */
-  --foreground:        oklch(0.17 0.01 55);    /* charcoal */
-  --card:              oklch(1 0 0);
-  --card-foreground:   oklch(0.17 0.01 55);
-  --popover:           oklch(1 0 0);
-  --popover-foreground: oklch(0.17 0.01 55);
-  --primary:           oklch(0.55 0.14 34);    /* terracotta */
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary:         oklch(0.95 0.01 75);    /* sand */
-  --secondary-foreground: oklch(0.35 0.01 55);
-  --muted:             oklch(0.96 0.008 75);
-  --muted-foreground:  oklch(0.52 0.02 55);
-  --accent:            oklch(0.96 0.008 75);
-  --accent-foreground: oklch(0.35 0.01 55);
-  --destructive:       oklch(0.577 0.245 27.325);
-  --border:            oklch(0.90 0.01 75);    /* warm sand */
-  --input:             oklch(0.90 0.01 75);
-  --ring:              oklch(0.55 0.14 34);
-  --radius:            0.75rem;
+  --background:        oklch(0.93 0.014 82);   /* warm limestone */
+  --foreground:        oklch(0.26 0.012 70);   /* basalt ink */
+  --card:              oklch(0.955 0.012 82);  /* raised stone panel */
+  --card-foreground:   oklch(0.26 0.012 70);
+  --popover:           oklch(0.955 0.012 82);
+  --popover-foreground: oklch(0.26 0.012 70);
+  --primary:           oklch(0.50 0.045 128);  /* olive-sage */
+  --primary-foreground: oklch(0.97 0.01 90);
+  --secondary:         oklch(0.895 0.016 82);  /* deeper limestone */
+  --secondary-foreground: oklch(0.38 0.012 70);
+  --muted:             oklch(0.90 0.015 82);   /* inset stone */
+  --muted-foreground:  oklch(0.50 0.015 72);   /* taupe */
+  --accent:            oklch(0.895 0.016 82);
+  --accent-foreground: oklch(0.38 0.012 70);
+  --destructive:       oklch(0.52 0.15 30);
+  --border:            oklch(0.855 0.018 82);  /* mortar hairline */
+  --input:             oklch(0.855 0.018 82);
+  --ring:              oklch(0.50 0.045 128);
+  --radius:            0.5rem;                 /* squarer — cut stone, not soft */
 
-  /* custom trip colors */
-  --flight-color: #C45C3A;
-  --train-color:  #1D6B9E;
-  --car-color:    #466A42;
-  --booked-color: #2D6A4F;
-  --pending-color: #A0724A;
+  /* carved-text tones (see .font-carved) */
+  --carve-fill: oklch(0.70 0.02 78);
+  --carve-hi:   rgba(255,252,244,0.85);
+  --carve-lo:   rgba(46,38,26,0.42);
+
+  /* custom trip colors — earthed to the stone palette */
+  --flight-color: #B5714A;   /* terracotta ochre */
+  --train-color:  #4F6D77;   /* slate blue-green */
+  --car-color:    #6C7A55;   /* olive-sage */
+  --booked-color: #55603F;   /* cypress */
+  --pending-color: #A88A5C;  /* tan */
 }
 
-/* ── Theme: Capri (azure + white) ── */
-.theme-capri {
-  --background:        oklch(0.99 0.005 220);
-  --foreground:        oklch(0.15 0.02 235);
-  --card:              oklch(1 0 0);
-  --card-foreground:   oklch(0.15 0.02 235);
-  --primary:           oklch(0.48 0.14 235);   /* sea blue */
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary:         oklch(0.94 0.015 220);
-  --muted:             oklch(0.95 0.01 220);
-  --muted-foreground:  oklch(0.50 0.03 235);
-  --border:            oklch(0.88 0.015 220);
-  --ring:              oklch(0.48 0.14 235);
+/* ── Theme: Basalt (dark — the stone at night) ── */
+.theme-basalt {
+  --background:        oklch(0.20 0.008 80);   /* dark basalt */
+  --foreground:        oklch(0.90 0.016 84);   /* limestone text */
+  --card:              oklch(0.24 0.009 80);
+  --card-foreground:   oklch(0.90 0.016 84);
+  --popover:           oklch(0.24 0.009 80);
+  --popover-foreground: oklch(0.90 0.016 84);
+  --primary:           oklch(0.68 0.05 128);   /* sage, lifted */
+  --primary-foreground: oklch(0.18 0.01 80);
+  --secondary:         oklch(0.28 0.009 80);
+  --secondary-foreground: oklch(0.82 0.012 84);
+  --muted:             oklch(0.28 0.009 80);
+  --muted-foreground:  oklch(0.64 0.014 82);
+  --accent:            oklch(0.28 0.009 80);
+  --accent-foreground: oklch(0.82 0.012 84);
+  --border:            oklch(0.32 0.010 80);
+  --input:             oklch(0.32 0.010 80);
+  --ring:              oklch(0.68 0.05 128);
 
-  --flight-color: #1D6B9E;
-  --train-color:  #466A42;
-  --car-color:    #8B5E3C;
-}
+  --carve-fill: oklch(0.40 0.015 78);
+  --carve-hi:   rgba(255,248,230,0.10);
+  --carve-lo:   rgba(0,0,0,0.55);
 
-/* ── Theme: Notte (dark — Amalfi at night) ── */
-.theme-notte {
-  --background:        oklch(0.14 0.01 260);
-  --foreground:        oklch(0.95 0.005 75);
-  --card:              oklch(0.20 0.01 260);
-  --card-foreground:   oklch(0.95 0.005 75);
-  --primary:           oklch(0.65 0.14 34);
-  --primary-foreground: oklch(0.10 0 0);
-  --secondary:         oklch(0.25 0.01 260);
-  --secondary-foreground: oklch(0.85 0.005 75);
-  --muted:             oklch(0.25 0.01 260);
-  --muted-foreground:  oklch(0.60 0.01 75);
-  --accent:            oklch(0.25 0.01 260);
-  --accent-foreground: oklch(0.85 0.005 75);
-  --border:            oklch(0.28 0.01 260);
-  --input:             oklch(0.28 0.01 260);
-  --ring:              oklch(0.65 0.14 34);
-
-  --flight-color: #E8846A;
-  --train-color:  #5DADE2;
-  --car-color:    #82C783;
+  --flight-color: #CE8A5F;
+  --train-color:  #6E93A0;
+  --car-color:    #9BA87B;
+  --booked-color: #8FA06B;
+  --pending-color: #C6A878;
 }
 
 @layer base {
   * { @apply border-border; }
-  body { @apply bg-background text-foreground; }
+  body {
+    @apply bg-background text-foreground;
+    /* limestone grain — a few hundred bytes of desaturated fractal noise,
+       laid over the base color at low opacity so the ground reads as stone. */
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+    background-attachment: fixed;
+  }
 }
 
 /* ── Leaflet overrides ── */
@@ -132,7 +136,21 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ── Serif display font ── */
+/* ── Inscriptional display font (Cinzel) ── */
 .font-display {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+/* ── Carved / intaglio text — letters cut INTO the stone ──
+   Fill sits close to the ground; a light highlight on the lower lip and a
+   faint dark shadow up top read the glyphs as recessed grooves. Pair with
+   .font-display and wide tracking so the shadows don't collide. */
+.font-carved {
+  color: var(--carve-fill);
+  text-shadow:
+    0 1px 0 var(--carve-hi),
+    0 -1px 1px var(--carve-lo),
+    0 2px 3px rgba(0, 0, 0, 0.06);
 }

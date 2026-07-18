@@ -9,12 +9,11 @@ import { timeline, modeIcons, modeColors, legs, stays, stayToPlace, activityToPl
 import type { Leg, TimelineDay, SelectedPlace } from "../data/trip";
 import PlaceHoverCard from "./PlaceHoverCard";
 
-type Theme = "amalfi" | "capri" | "notte";
+type Theme = "travertine" | "basalt";
 
 const THEMES: { id: Theme; label: string; swatch: string }[] = [
-  { id: "amalfi", label: "Amalfi",  swatch: "#C45C3A" },
-  { id: "capri",  label: "Capri",   swatch: "#1D6B9E" },
-  { id: "notte",  label: "Notte",   swatch: "#2a2a3e" },
+  { id: "travertine", label: "Travertine", swatch: "#C9BCA0" },
+  { id: "basalt",     label: "Basalt",     swatch: "#302C25" },
 ];
 
 interface Props {
@@ -43,29 +42,43 @@ export default function TripPanel({ activeTheme, onThemeChange, onLocationSelect
     <div className="flex flex-col h-full bg-card border-r border-border overflow-hidden">
 
       {/* ── Header ── */}
-      <div className="px-5 pt-5 pb-4 flex-shrink-0">
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-1">
-          Summer 2026
+      <div className="px-5 pt-6 pb-4 flex-shrink-0 text-center">
+        <p className="font-display text-[10px] text-[var(--primary)] uppercase mb-2.5" style={{ letterSpacing: "0.34em" }}>
+          Summer
         </p>
-        <h1 className="font-display text-3xl text-foreground leading-tight">
-          Italy
+        <h1 className="font-display font-carved text-[2.6rem] leading-none">
+          ITALIA
         </h1>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Jul 22 – Aug 6 · Rahul & Dhrumi
+
+        {/* Hairline rule with a sage diamond — a carved plaque divider */}
+        <div className="relative flex items-center justify-center my-3">
+          <span className="h-px w-28" style={{ background: "linear-gradient(90deg, transparent, var(--border), transparent)" }} />
+          <span className="absolute h-1.5 w-1.5 rotate-45" style={{ background: "var(--primary)", boxShadow: "0 0 0 3px var(--background)" }} />
+        </div>
+
+        <p className="font-display text-[11px] text-[var(--primary)]" style={{ letterSpacing: "0.42em" }}>
+          · MMXXVI ·
+        </p>
+        <p className="text-sm text-muted-foreground mt-2">
+          Jul 22 – Aug 6 · Rahul &amp; Dhrumi
         </p>
 
         {/* Progress */}
-        <div className="mt-4">
-          <div className="flex justify-between text-xs mb-1.5">
+        <div className="mt-5 text-left">
+          <div className="flex justify-between text-[11px] mb-1.5 uppercase" style={{ letterSpacing: "0.1em" }}>
             <span className="text-muted-foreground">Bookings</span>
-            <span className="font-semibold" style={{ color: "var(--booked-color, #2D6A4F)" }}>
+            <span className="font-display font-semibold" style={{ color: "var(--booked-color)" }}>
               {bookedLegs}/{totalLegs} confirmed
             </span>
           </div>
-          <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+          {/* inset groove, carved into the stone */}
+          <div
+            className="h-1.5 rounded-full bg-muted overflow-hidden"
+            style={{ boxShadow: "inset 0 1px 2px rgba(0,0,0,0.18)" }}
+          >
             <motion.div
               className="h-full rounded-full"
-              style={{ background: "var(--primary)" }}
+              style={{ background: "linear-gradient(90deg, var(--booked-color), var(--primary))" }}
               initial={{ width: 0 }}
               animate={{ width: `${pct}%` }}
               transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
@@ -76,9 +89,9 @@ export default function TripPanel({ activeTheme, onThemeChange, onLocationSelect
         {/* Quick stats */}
         <div className="grid grid-cols-3 gap-2 mt-4">
           {stats.map(s => (
-            <div key={s.label} className="text-center py-2 rounded-lg bg-muted/60">
-              <p className="text-base font-bold text-foreground">{s.n}</p>
-              <p className="text-[10px] text-muted-foreground">{s.label}</p>
+            <div key={s.label} className="text-center py-2.5 rounded-md bg-muted/60 border border-border">
+              <p className="font-display text-lg leading-none text-foreground">{s.n}</p>
+              <p className="text-[10px] text-muted-foreground uppercase mt-1" style={{ letterSpacing: "0.08em" }}>{s.label}</p>
             </div>
           ))}
         </div>

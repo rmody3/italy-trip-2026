@@ -17,9 +17,8 @@ interface Props {
 
 // ── Map styles (CARTO vector tiles — no API key required) ─────────────────────
 const MAP_STYLES: Record<string, string> = {
-  amalfi: "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
-  capri:  "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
-  notte:  "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+  travertine: "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
+  basalt:     "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
 };
 
 // ── GeoJSON routes ─────────────────────────────────────────────────────────────
@@ -65,19 +64,21 @@ const ROUTES_GEOJSON: GeoJSON.FeatureCollection = {
 };
 
 // ── Layer styles ───────────────────────────────────────────────────────────────
+// Earthed route palette — matches the Travertine trip colors, so the arcs read
+// as aged ink over the parchment map rather than bright web-map lines.
 const routeLayer: LayerProps = {
   id: "routes",
   type: "line",
   paint: {
     "line-color": [
       "match", ["get", "mode"],
-      "flight", "#C45C3A",
-      "train",  "#1D6B9E",
-      "car",    "#466A42",
-      "#888",
+      "flight", "#A65E38",   // terracotta ochre
+      "train",  "#3F6470",   // slate
+      "car",    "#5E6B48",   // olive-sage
+      "#7A6F58",
     ],
-    "line-width": ["match", ["get", "mode"], "flight", 2, 3],
-    "line-opacity": ["match", ["get", "status"], "booked", 0.9, 0.4],
+    "line-width": ["match", ["get", "mode"], "flight", 2, 2.5],
+    "line-opacity": ["match", ["get", "status"], "booked", 0.85, 0.42],
     "line-dasharray": ["match", ["get", "mode"], "flight", ["literal", [3, 3]], ["literal", [1, 0]]],
   },
   layout: { "line-join": "round", "line-cap": "round" },
@@ -90,13 +91,13 @@ const routeGlowLayer: LayerProps = {
   paint: {
     "line-color": [
       "match", ["get", "mode"],
-      "flight", "#C45C3A",
-      "train",  "#1D6B9E",
-      "car",    "#466A42",
-      "#888",
+      "flight", "#A65E38",
+      "train",  "#3F6470",
+      "car",    "#5E6B48",
+      "#7A6F58",
     ],
     "line-width": 8,
-    "line-opacity": 0.12,
+    "line-opacity": 0.1,
     "line-blur": 4,
   },
   layout: { "line-join": "round", "line-cap": "round" },
@@ -121,11 +122,11 @@ const transitDotLayer: LayerProps = {
   id: "transit-dots",
   type: "circle",
   paint: {
-    "circle-radius": 4,
-    "circle-color": "#fff",
-    "circle-stroke-color": "#aaa",
-    "circle-stroke-width": 1.5,
-    "circle-opacity": 0.85,
+    "circle-radius": 3.5,
+    "circle-color": "#F1EADA",       // limestone
+    "circle-stroke-color": "#8A7B62", // travertine
+    "circle-stroke-width": 1.25,
+    "circle-opacity": 0.9,
   },
 };
 
@@ -137,7 +138,15 @@ export default function MapViewGL({ onLocationSelect, activeTheme }: Props) {
     onLocationSelect(null);
   }, [onLocationSelect]);
 
-  const style = MAP_STYLES[activeTheme] ?? MAP_STYLES.amalfi;
+  const style = MAP_STYLES[activeTheme] ?? MAP_STYLES.travertine;
+
+  // Warm, low-saturation wash over the tile canvas so the basemap reads as an
+  // aged parchment map that belongs to the Travertine palette. Applied to the
+  // GL canvas only — the HTML pin markers sit above it and stay untinted.
+  const canvasFilter =
+    activeTheme === "basalt"
+      ? "saturate(0.85) brightness(0.96) sepia(0.08)"
+      : "saturate(0.6) sepia(0.16) contrast(0.96) brightness(1.03)";
 
   return (
     <Map
@@ -159,7 +168,31 @@ export default function MapViewGL({ onLocationSelect, activeTheme }: Props) {
         <Layer {...transitDotLayer} />
       </Source>
 
-      {/* Stay pins */}
+      {/* Activity pins — drawn first so nearby stay labels stack on top of them */}
+      {activities.map(act => (
+        <Marker
+          key={act.id}
+          longitude={act.location.coords[1]}
+          latitude={act.location.coords[0]}
+          anchor="bottom"
+          onClick={e => {
+            e.originalEvent.stopPropagation();
+            onLocationSelect(activityToPlace(act));
+          }}
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            whileHover={{ scale: 1.15 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20, delay: 0.05 }}
+            className="pin-activity cursor-pointer"
+          >
+            <span className="pin-emoji-sm">{act.emoji}</span>
+          </motion.div>
+        </Marker>
+      ))}
+
+      {/* Stay pins — primary markers, drawn last so their labels stay legible */}
       {stays.map(stay => (
         <Marker
           key={stay.id}
@@ -184,30 +217,6 @@ export default function MapViewGL({ onLocationSelect, activeTheme }: Props) {
         </Marker>
       ))}
 
-      {/* Activity pins */}
-      {activities.map(act => (
-        <Marker
-          key={act.id}
-          longitude={act.location.coords[1]}
-          latitude={act.location.coords[0]}
-          anchor="bottom"
-          onClick={e => {
-            e.originalEvent.stopPropagation();
-            onLocationSelect(activityToPlace(act));
-          }}
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            whileHover={{ scale: 1.15 }}
-            transition={{ type: "spring", stiffness: 400, damping: 20, delay: 0.05 }}
-            className="pin-activity cursor-pointer"
-          >
-            <span className="pin-emoji-sm">{act.emoji}</span>
-          </motion.div>
-        </Marker>
-      ))}
-
       <NavigationControl position="bottom-right" showCompass={false} />
 
       <style>{`
@@ -223,24 +232,59 @@ export default function MapViewGL({ onLocationSelect, activeTheme }: Props) {
           justify-content: center;
           filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
         }
-        .pin-emoji { font-size: 28px; line-height: 1; }
-        .pin-emoji-sm { font-size: 22px; line-height: 1; }
+        /* Stay pin — emoji set in a limestone medallion, like a wax seal on a map */
+        .pin-emoji {
+          font-size: 16px; line-height: 1;
+          width: 30px; height: 30px; border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          background: var(--card, #F4EEE1);
+          border: 1.5px solid var(--border, #C9BCA0);
+          box-shadow: 0 2px 5px rgba(60,48,28,0.20);
+          filter: saturate(0.9);
+        }
+        .pin-emoji-sm {
+          font-size: 13px; line-height: 1;
+          width: 24px; height: 24px; border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          background: var(--card, #F4EEE1);
+          border: 1px solid var(--border, #C9BCA0);
+          box-shadow: 0 1px 4px rgba(60,48,28,0.16);
+          filter: saturate(0.82);
+        }
+        /* Engraved place label — Cinzel caps in a limestone chip, like the
+           inscribed place names on an old map. */
         .pin-label {
-          margin-top: 3px;
-          font-size: 10px;
-          font-weight: 700;
-          font-family: var(--font-sans), 'Inter', sans-serif;
-          background: white;
-          color: #1C1917;
-          padding: 1px 6px;
-          border-radius: 4px;
+          margin-top: 4px;
+          font-size: 9px;
+          font-weight: 600;
+          font-family: var(--font-display), Georgia, serif;
+          text-transform: uppercase;
+          background: var(--card, #F4EEE1);
+          color: var(--foreground, #33302A);
+          padding: 2px 7px;
+          border: 1px solid var(--border, #D2C7B2);
+          border-radius: 3px;
           white-space: nowrap;
-          box-shadow: 0 1px 4px rgba(0,0,0,0.18);
-          letter-spacing: 0.01em;
+          box-shadow: 0 1px 3px rgba(60,48,28,0.14);
+          letter-spacing: 0.14em;
         }
         .maplibregl-ctrl-attrib { display: none; }
-        /* Smooth zoom/pan */
-        .maplibregl-map canvas { outline: none; }
+        /* Parchment wash on the tile canvas (pins stay above, untinted) */
+        .maplibregl-canvas { outline: none; filter: ${canvasFilter}; }
+        /* Zoom control in the stone palette */
+        .maplibregl-ctrl-group {
+          background: var(--card, #F4EEE1) !important;
+          border: 1px solid var(--border, #D2C7B2) !important;
+          box-shadow: 0 2px 8px rgba(60,48,28,0.12) !important;
+          border-radius: 5px !important;
+          overflow: hidden;
+        }
+        .maplibregl-ctrl-group button {
+          background: transparent !important;
+          color: var(--foreground) !important;
+        }
+        .maplibregl-ctrl-group button + button { border-top: 1px solid var(--border, #D2C7B2) !important; }
+        .maplibregl-ctrl-group button:hover { background: var(--muted, #E2D9C7) !important; }
       `}</style>
     </Map>
   );
