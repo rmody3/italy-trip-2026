@@ -24,7 +24,9 @@ Edit Google Sheet → npm run sync → commit → git push (Vercel auto-deploys)
 ```
 
 Sheet ID: `1k6uIUhaXpoKKXNT2mrZUDjgBQneiYtpb94cKQgGkU5c`  
-Auth: `gcloud auth print-access-token` (Drive scope). No credentials on Vercel.
+Auth: `gcloud auth print-access-token` (Drive scope) for local `npm run sync`. No credentials on Vercel.
+
+**Automated sync:** `.github/workflows/sync.yml` runs `npm run sync` **daily (06:00 UTC)** and on manual dispatch, commits any change, and pushes (Vercel auto-deploys). In CI it authenticates with a Google **service account** via the `GOOGLE_SERVICE_ACCOUNT_JSON` GitHub secret (the Sheet is shared read-only with the SA's email) — `sync-sheet.mjs` signs a JWT for the token, no gcloud needed. So Sheet edits reach the live site within a day with zero manual steps; local `npm run sync` still works for an immediate push.
 
 ---
 
