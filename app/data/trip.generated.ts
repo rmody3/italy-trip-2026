@@ -528,6 +528,7 @@ export const timeline = [
     ],
     "activities": [],
     "notes": [
+      "Dinner at 9:30 at La Gioia San Marco for 6 people (booked)",
       "Depart from NYC"
     ]
   },
@@ -753,9 +754,9 @@ export const timeline = [
       }
     ],
     "notes": [
-      "Leave from Lake Maggiore to Tuscany",
-      "Winery",
-      "Winery"
+      "Leave from Lake Maggiore to Tuscany. Lupaia Dinner Reservation at 8:30 (booked)",
+      "Eat Breakfast at the hotel. Pool. Go to Montelpuciano for the day. Visit the city and go to wineries that are tagged on Google maps. Reservation at Risotrante 4 venti (booked at 8 pm)",
+      "Winery. Go to Montalcino for the day with saved Google Map wineries."
     ]
   },
   {
@@ -872,8 +873,9 @@ export const timeline = [
     "notes": [
       "Winery",
       "Lupaia to Rome Train (56 min ) or Drive (1 hr 37 min). Fly to Bari ( ~38 dollars)",
-      "Borgo antico bistrot at sunset. No reservations. Get there at 6:30",
-      "Oster del tempo Resturant at 7 pm. Reached out to both confirmed."
+      "Borgo Egnazia Beach Club? Go to Ostuni and walk around. Borgo Antico Bistrot( sunset drinks at 6:30, no reservations) Dinner at Oster Del tempo at 9 pm (emailed not confirmed)",
+      "Alberobello",
+      "Chill day drive around"
     ]
   },
   {
