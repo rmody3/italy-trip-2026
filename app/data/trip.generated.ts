@@ -287,7 +287,7 @@ export const legs = [
     "carrier": "ITA Airways",
     "flightNumber": "AZ1607",
     "price": "EUR 174.10 for 2",
-    "notes": "Nonstop Economy · Bags: 1 carry-on (8kg) + personal item pp; no checked bag included · 1h 05m"
+    "notes": "Nonstop Economy · Bags: 1 checked (23kg, booked) + carry-on (8kg) + personal item pp · 1h 05m"
   },
   {
     "id": "leg7",
@@ -507,6 +507,50 @@ export const activities = [
 
 export const timeline = [
   {
+    "date": "July 21",
+    "dateShort": "Jul 21",
+    "location": "Home",
+    "emoji": "🏠",
+    "legs": [
+      {
+        "id": "leg1",
+        "from": {
+          "name": "New York JFK",
+          "coords": [
+            40.6413,
+            -73.7781
+          ],
+          "type": "airport",
+          "placeQuery": "John F. Kennedy International Airport, Queens, New York",
+          "photo": "/photos/JFK.jpg"
+        },
+        "to": {
+          "name": "Milan Malpensa",
+          "coords": [
+            45.6306,
+            8.7281
+          ],
+          "type": "airport",
+          "placeQuery": "Milan Malpensa Airport",
+          "photo": "/photos/MXP.jpg"
+        },
+        "mode": "flight",
+        "date": "Jul 21",
+        "status": "booked",
+        "departureTime": "22:20",
+        "arrivalTime": "12:15+1",
+        "confirmation": "DFMZN5 (Qantas · EK operated)",
+        "carrier": "Emirates",
+        "flightNumber": "EK206",
+        "notes": "Nonstop Economy · Bags: 2 checked (23kg) + carry-on + personal item pp · 7h 55m"
+      }
+    ],
+    "activities": [],
+    "notes": [
+      "Depart JFK on Emirates EK206 (overnight flight)"
+    ]
+  },
+  {
     "date": "July 22",
     "dateShort": "Jul 22",
     "location": "Milan",
@@ -515,7 +559,7 @@ export const timeline = [
     "activities": [],
     "notes": [
       "Dinner at 9:30 at La Gioia San Marco for 6 people (booked)",
-      "Depart from NYC"
+      "Arrive Milan Malpensa (EK206 lands midday)"
     ]
   },
   {
@@ -801,7 +845,7 @@ export const timeline = [
         "carrier": "ITA Airways",
         "flightNumber": "AZ1607",
         "price": "EUR 174.10 for 2",
-        "notes": "Nonstop Economy · Bags: 1 carry-on (8kg) + personal item pp; no checked bag included · 1h 05m"
+        "notes": "Nonstop Economy · Bags: 1 checked (23kg, booked) + carry-on (8kg) + personal item pp · 1h 05m"
       },
       {
         "id": "leg7",
