@@ -63,23 +63,41 @@ export const stays = [
     "emoji": "🫒"
   },
   {
-    "id": "sardinia",
-    "name": "Sardinia (TBD)",
+    "id": "su-gologone",
+    "name": "Su Gologone Experience Hotel",
     "location": {
-      "name": "Sardinia (TBD)",
+      "name": "Su Gologone Experience Hotel",
       "coords": [
-        39.2238,
-        9.1217
+        40.2728,
+        9.4512
       ],
       "type": "stay",
-      "placeQuery": "Sardinia, Italy",
-      "photo": "/photos/sardinia.jpg"
+      "placeQuery": "Art-filled experience hotel at the foot of the Supramonte, near Oliena. Anniversary stay."
     },
     "checkIn": "Aug 2",
+    "checkOut": "Aug 4",
+    "nights": 2,
+    "description": "",
+    "category": "hotel",
+    "emoji": "🏔️"
+  },
+  {
+    "id": "spiagge-san-pietro",
+    "name": "Spiagge San Pietro",
+    "location": {
+      "name": "Spiagge San Pietro",
+      "coords": [
+        39.2789,
+        9.5936
+      ],
+      "type": "stay",
+      "placeQuery": "Relaxed beach resort on the southeast coast at Castiadas, near Costa Rei."
+    },
+    "checkIn": "Aug 4",
     "checkOut": "Aug 6",
-    "nights": 4,
-    "description": "Four nights in Sardinia before the flight home from Cagliari.",
-    "category": "villa",
+    "nights": 2,
+    "description": "",
+    "category": "resort",
     "emoji": "🏖️"
   }
 ] as unknown as Stay[];
@@ -108,14 +126,14 @@ export const legs = [
       "photo": "/photos/MXP.jpg"
     },
     "mode": "flight",
-    "date": "Jul 22",
-    "status": "pending",
-    "departureTime": "21:55",
-    "arrivalTime": "12:05+1",
-    "carrier": "Delta",
-    "flightNumber": "DL184",
-    "price": "$957 for 2",
-    "notes": "Nonstop Economy · 8h 10m"
+    "date": "Jul 21",
+    "status": "booked",
+    "departureTime": "22:20",
+    "arrivalTime": "12:15+1",
+    "confirmation": "DFMZN5 (Qantas · EK operated)",
+    "carrier": "Emirates",
+    "flightNumber": "EK206",
+    "notes": "Nonstop Economy · Bags: 2 checked (23kg) + carry-on + personal item pp · 7h 55m"
   },
   {
     "id": "leg2",
@@ -269,7 +287,7 @@ export const legs = [
     "carrier": "ITA Airways",
     "flightNumber": "AZ1607",
     "price": "EUR 174.10 for 2",
-    "notes": "Nonstop Economy · 1h 05m"
+    "notes": "Nonstop Economy · Bags: 1 carry-on (8kg) + personal item pp; no checked bag included · 1h 05m"
   },
   {
     "id": "leg7",
@@ -331,8 +349,9 @@ export const legs = [
     "arrivalTime": "9:45",
     "confirmation": "TSCHHB",
     "carrier": "Ryanair",
+    "flightNumber": "FR8726",
     "price": "Euro 278 for 2",
-    "notes": "Nonstop Economy · 1h 30m"
+    "notes": "Nonstop Economy · Bags: 2×20kg checked (booked) + 1 under-seat bag 40×20×25cm pp; no cabin bag · 1h 30m"
   },
   {
     "id": "leg9",
@@ -393,7 +412,7 @@ export const legs = [
     "carrier": "Air France",
     "flightNumber": "AF1111",
     "price": "120,000 miles + $882.46",
-    "notes": "2h 15m"
+    "notes": "Business · Bags: 2 checked (32kg) + carry-on pp · 2h 15m"
   },
   {
     "id": "leg11",
@@ -492,40 +511,7 @@ export const timeline = [
     "dateShort": "Jul 22",
     "location": "Milan",
     "emoji": "✈️",
-    "legs": [
-      {
-        "id": "leg1",
-        "from": {
-          "name": "New York JFK",
-          "coords": [
-            40.6413,
-            -73.7781
-          ],
-          "type": "airport",
-          "placeQuery": "John F. Kennedy International Airport, Queens, New York",
-          "photo": "/photos/JFK.jpg"
-        },
-        "to": {
-          "name": "Milan Malpensa",
-          "coords": [
-            45.6306,
-            8.7281
-          ],
-          "type": "airport",
-          "placeQuery": "Milan Malpensa Airport",
-          "photo": "/photos/MXP.jpg"
-        },
-        "mode": "flight",
-        "date": "Jul 22",
-        "status": "pending",
-        "departureTime": "21:55",
-        "arrivalTime": "12:05+1",
-        "carrier": "Delta",
-        "flightNumber": "DL184",
-        "price": "$957 for 2",
-        "notes": "Nonstop Economy · 8h 10m"
-      }
-    ],
+    "legs": [],
     "activities": [],
     "notes": [
       "Dinner at 9:30 at La Gioia San Marco for 6 people (booked)",
@@ -815,7 +801,7 @@ export const timeline = [
         "carrier": "ITA Airways",
         "flightNumber": "AZ1607",
         "price": "EUR 174.10 for 2",
-        "notes": "Nonstop Economy · 1h 05m"
+        "notes": "Nonstop Economy · Bags: 1 carry-on (8kg) + personal item pp; no checked bag included · 1h 05m"
       },
       {
         "id": "leg7",
@@ -879,29 +865,28 @@ export const timeline = [
     ]
   },
   {
-    "date": "August 2–5",
-    "dateShort": "Aug 2–5",
-    "location": "Sardinia",
-    "emoji": "🏖️",
+    "date": "August 2–3",
+    "dateShort": "Aug 2–3",
+    "location": "Oliena",
+    "emoji": "🏔️",
     "stay": {
-      "id": "sardinia",
-      "name": "Sardinia (TBD)",
+      "id": "su-gologone",
+      "name": "Su Gologone Experience Hotel",
       "location": {
-        "name": "Sardinia (TBD)",
+        "name": "Su Gologone Experience Hotel",
         "coords": [
-          39.2238,
-          9.1217
+          40.2728,
+          9.4512
         ],
         "type": "stay",
-        "placeQuery": "Sardinia, Italy",
-        "photo": "/photos/sardinia.jpg"
+        "placeQuery": "Art-filled experience hotel at the foot of the Supramonte, near Oliena. Anniversary stay."
       },
       "checkIn": "Aug 2",
-      "checkOut": "Aug 6",
-      "nights": 4,
-      "description": "Four nights in Sardinia before the flight home from Cagliari.",
-      "category": "villa",
-      "emoji": "🏖️"
+      "checkOut": "Aug 4",
+      "nights": 2,
+      "description": "",
+      "category": "hotel",
+      "emoji": "🏔️"
     },
     "legs": [
       {
@@ -932,8 +917,9 @@ export const timeline = [
         "arrivalTime": "9:45",
         "confirmation": "TSCHHB",
         "carrier": "Ryanair",
+        "flightNumber": "FR8726",
         "price": "Euro 278 for 2",
-        "notes": "Nonstop Economy · 1h 30m"
+        "notes": "Nonstop Economy · Bags: 2×20kg checked (booked) + 1 under-seat bag 40×20×25cm pp; no cabin bag · 1h 30m"
       },
       {
         "id": "leg9",
@@ -966,7 +952,40 @@ export const timeline = [
         "notes": "Nissan Juke or similar, Automatic Compact (Avis via Auto Europe, 4 days, drop at CAG) · 4 days"
       }
     ],
-    "activities": []
+    "activities": [],
+    "notes": [
+      "le Carrube → fly BRI–CAG 8:15, pick up rental at Cagliari, drive to Oliena. Check in Su Gologone — Junior Suite, 2 nights. Anniversary stay 🎉"
+    ]
+  },
+  {
+    "date": "August 4–5",
+    "dateShort": "Aug 4–5",
+    "location": "Castiadas",
+    "emoji": "🏖️",
+    "stay": {
+      "id": "spiagge-san-pietro",
+      "name": "Spiagge San Pietro",
+      "location": {
+        "name": "Spiagge San Pietro",
+        "coords": [
+          39.2789,
+          9.5936
+        ],
+        "type": "stay",
+        "placeQuery": "Relaxed beach resort on the southeast coast at Castiadas, near Costa Rei."
+      },
+      "checkIn": "Aug 4",
+      "checkOut": "Aug 6",
+      "nights": 2,
+      "description": "",
+      "category": "resort",
+      "emoji": "🏖️"
+    },
+    "legs": [],
+    "activities": [],
+    "notes": [
+      "Drive to the SE coast. Check in Spiagge San Pietro, Castiadas — Deluxe Double, 2 nights. Beach days + Costa Rei."
+    ]
   },
   {
     "date": "August 6",
@@ -1003,7 +1022,7 @@ export const timeline = [
         "carrier": "Air France",
         "flightNumber": "AF1111",
         "price": "120,000 miles + $882.46",
-        "notes": "2h 15m"
+        "notes": "Business · Bags: 2 checked (32kg) + carry-on pp · 2h 15m"
       },
       {
         "id": "leg11",
